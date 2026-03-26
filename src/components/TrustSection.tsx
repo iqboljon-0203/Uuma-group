@@ -2,7 +2,11 @@
 
 import { motion } from "framer-motion";
 
+import { useLang } from "@/store/lang-context";
+
 export default function TrustSection() {
+  const { t } = useLang();
+  
   const items = [
     {
       icon: (
@@ -13,8 +17,8 @@ export default function TrustSection() {
           <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
-      title: "Tezkor yetkazib berish",
-      desc: "Toshkent bo'ylab 24 soat ichida yetkaziladi",
+      title: t.trust.delivery,
+      desc: t.trust.deliveryDesc,
       color: "bg-blue-500/10",
       iconColor: "text-blue-600"
     },
@@ -26,8 +30,8 @@ export default function TrustSection() {
           <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5" />
         </svg>
       ),
-      title: "Sifat kafolati",
-      desc: "100% original va sertifikatlangan mahsulotlar",
+      title: t.trust.guarantee,
+      desc: t.trust.guaranteeDesc,
       color: "bg-emerald-500/10",
       iconColor: "text-emerald-600"
     },
@@ -40,8 +44,8 @@ export default function TrustSection() {
           <path d="M3 4H21V16C21 17.1046 20.1046 18 19 18H5C3.89543 18 3 17.1046 3 16V4Z" stroke="currentColor" strokeWidth="1.5" />
         </svg>
       ),
-      title: "24/7 yordam",
-      desc: "Telegram orqali istalgan vaqtda aloqa",
+      title: t.trust.support,
+      desc: t.trust.supportDesc,
       color: "bg-purple-500/10",
       iconColor: "text-purple-600"
     },
@@ -52,8 +56,8 @@ export default function TrustSection() {
           <path d="M12 2L15 8H22L17 13L19 20L12 16L5 20L7 13L2 8H9L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
-      title: "Premium daraja",
-      desc: "Habfer va Jieti: Premium maishiy kimyo",
+      title: t.trust.premium,
+      desc: t.trust.premiumDesc,
       color: "bg-amber-500/10",
       iconColor: "text-amber-600"
     },
@@ -70,8 +74,8 @@ export default function TrustSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-[10px] font-bold text-burgundy uppercase tracking-[0.2em] mb-4 block">Nima uchun Uuma Group?</span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Ishonchingiz biz uchun muhim</h2>
+          <span className="text-[10px] font-bold text-burgundy uppercase tracking-[0.2em] mb-4 block">{t.trust.tagline}</span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">{t.trust.title}</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">

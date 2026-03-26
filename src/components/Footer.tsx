@@ -4,7 +4,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
 
+import { useLang } from "@/store/lang-context";
+
 export default function Footer() {
+  const { t } = useLang();
   return (
     <footer className="bg-[#1A1A1A] text-[#FAFAFA] pt-24 pb-12 overflow-hidden border-t border-white/5">
       <div className="max-w-[1280px] mx-auto px-6">
@@ -14,9 +17,7 @@ export default function Footer() {
               <Logo className="text-gold" />
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed mb-8">
-              Premium maishiy kimyo mahsulotlari ishlab chiqaruvchisi. 
-              Biz uyingizda mukammal tozalik va xushbo'y iforni yaratish uchun 
-              yuqori sifatli Habfer va Jieti mahsulotlarini taklif etamiz.
+              {t.footer.desc}
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-4">
@@ -43,41 +44,41 @@ export default function Footer() {
 
           <div className="md:col-span-1 pt-[6px]">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#FFF8E7]/50 mb-8">
-              Sahifalar
+              {t.footer.pages}
             </h4>
             <nav className="flex flex-col gap-4">
               <Link href="/" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Bosh sahifa
+                {t.nav.home}
               </Link>
               <Link href="/catalog" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Katalog
+                {t.nav.catalog}
               </Link>
               <Link href="/cart" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Savat
+                {t.nav.cart}
               </Link>
             </nav>
           </div>
 
           <div className="md:col-span-1 pt-[6px]">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#FFF8E7]/50 mb-8">
-              Kategoriyalar
+              {t.footer.categories}
             </h4>
             <nav className="flex flex-col gap-4">
               <Link href="/catalog?type=liquid" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Suyuq mahsulotlar
+                {t.categories.liquid}
               </Link>
               <Link href="/catalog?type=capsules" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Kapsula va granulalar
+                {t.categories.capsules}
               </Link>
               <Link href="/catalog?type=household" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Ro'zg'or buyumlari
+                {t.categories.household}
               </Link>
             </nav>
           </div>
 
           <div className="md:col-span-1 pt-[6px]">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#FFF8E7]/50 mb-8">
-              Aloqa
+              {t.footer.contact}
             </h4>
             <nav className="flex flex-col gap-4">
               <a
@@ -94,10 +95,10 @@ export default function Footer() {
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
-                <span>Toshkent sh., Yunusobod tumani,<br/>Bog'ishamol ko'chasi, 24-uy</span>
+                <span>{t.footer.address}</span>
               </div>
               <div className="text-sm font-medium text-gray-500 mt-2 pl-7 italic">
-                Ish tartibi: 09:00 - 18:00 (Du - Sha)
+                {t.footer.workHours}
               </div>
             </nav>
           </div>
@@ -105,7 +106,7 @@ export default function Footer() {
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-xs text-gray-600 font-medium tracking-tight">
-            © 2026 Uuma Group. Barcha huquqlar himoyalangan.
+            © 2026 Uuma Group. {t.footer.allRights}
           </p>
           <div className="flex items-center gap-8">
             <span className="text-[10px] text-gray-700 font-bold uppercase tracking-tighter">Premium Household Chemicals</span>

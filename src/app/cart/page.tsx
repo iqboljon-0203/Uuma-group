@@ -12,35 +12,46 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useLang } from "@/store/lang-context";
+
 export default function CartPageWrapper() {
   return <CartPage />;
 }
 
 function CartPage() {
+  const { t } = useLang();
   const { items, updateQty, removeItem, totalPrice, totalCount } = useCart();
   const { show } = useToast();
   const [formData, setFormData] = useState({ name: "", phone: "", address: "" });
 
+  const getProductName = (product: any) => {
+    if (product.id === 2) return t.product.names.belizna;
+    if (product.id === 4) return t.product.names.soap;
+    if (product.id === 7) return t.product.names.basket;
+    return product.name;
+  };
+
   const handleOrder = () => {
     const { name, phone, address } = formData;
     if (!name || !phone || !address) {
-      show("Iltimos, barcha maydonlarni to'ldiring!");
+      show(t.checkout.error);
       return;
     }
 
-    let message = `🛒 *Yangi Buyurtma*\n\n`;
-    message += `👤 Ism: ${name}\n`;
-    message += `📞 Telefon: ${phone}\n`;
-    message += `📍 Manzil: ${address}\n\n`;
-    message += `📦 *Mahsulotlar:*\n`;
+    let message = `${t.checkout.telegram.header}\n\n`;
+    message += `${t.checkout.telegram.name}: ${name}\n`;
+    message += `${t.checkout.telegram.phone}: ${phone}\n`;
+    message += `${t.checkout.telegram.address}: ${address}\n\n`;
+    message += `${t.checkout.telegram.products}\n`;
 
     items.forEach((item) => {
-      message += `• ${item.product.name} (${item.product.volume}) × ${item.qty} = ${formatPrice(
-        item.product.price * item.qty
+      message += `• ${getProductName(item.product)} (${item.product.volume}) × ${item.qty} = ${formatPrice(
+        item.product.price * item.qty,
+        t.cart.currency
       )}\n`;
     });
 
-    message += `\n💰 *Jami: ${formatPrice(totalPrice)}*`;
+    message += `\n${t.checkout.telegram.total}: ${formatPrice(totalPrice, t.cart.currency)}*`;
 
     const telegramUrl = `https://t.me/uumagroup?text=${encodeURIComponent(message)}`;
     window.open(telegramUrl, "_blank");
@@ -57,7 +68,7 @@ function CartPage() {
               animate={{ opacity: 1, x: 0 }}
               className="text-burgundy font-semibold uppercase tracking-widest text-xs mb-4 block"
             >
-              Savat
+              {t.nav.cart}
             </motion.span>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -65,7 +76,7 @@ function CartPage() {
               transition={{ delay: 0.1 }}
               className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight"
             >
-              Sizning savatingiz
+              {t.cart.title}
             </motion.h1>
           </div>
 
@@ -81,13 +92,13 @@ function CartPage() {
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Savat bo'sh</h2>
-              <p className="text-gray-500 mb-8 max-w-[320px] mx-auto">Sizda hali hech qanday mahsulot yo'q. Katalogni ko'ring va xarid qiling!</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.cart.empty}</h2>
+              <p className="text-gray-500 mb-8 max-w-[320px] mx-auto">{t.cart.empty}</p>
               <Link
                 href="/catalog"
                 className="btn--lg bg-burgundy hover:bg-burgundy-dark text-white rounded-xl font-bold px-8 py-5 shadow-2xl shadow-burgundy/20 inline-block"
               >
-                Katalogga o'tish
+                {t.cart.toCatalog}
               </Link>
             </motion.div>
           ) : (
@@ -117,7 +128,7 @@ function CartPage() {
                           {item.product.brand}
                         </span>
                         <h4 className="text-base font-bold text-gray-900 mb-1 leading-tight">
-                          {item.product.name}
+                          {getProductName(item.product)}
                         </h4>
                         <span className="text-xs text-gray-500">{item.product.volume}</span>
                       </div>
@@ -138,7 +149,7 @@ function CartPage() {
                           </button>
                         </div>
                         <span className="text-base font-extrabold text-[#1A1A1A]">
-                          {formatPrice(item.product.price * item.qty)}
+                          {formatPrice(item.product.price * item.qty, t.cart.currency)}
                         </span>
                       </div>
                       <button
@@ -160,31 +171,31 @@ function CartPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white p-8 rounded-3xl shadow-2xl shadow-burgundy/5 border border-gray-100 flex flex-col gap-6"
               >
-                <h3 className="text-xl font-extrabold text-gray-900 mb-2">Buyurtma berish</h3>
+                <h3 className="text-xl font-extrabold text-gray-900 mb-2">{t.checkout.title}</h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Ism</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">{t.checkout.name}</label>
                     <input
                       type="text"
-                      placeholder="Ismingizni kiriting"
+                      placeholder={t.checkout.namePlaceholder}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full bg-cream border-2 border-transparent focus:border-burgundy px-5 py-4 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-gray-300"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Telefon raqami</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">{t.checkout.phone}</label>
                     <input
                       type="tel"
-                      placeholder="+998 XX XXX XX XX"
+                      placeholder={t.checkout.phonePlaceholder}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full bg-cream border-2 border-transparent focus:border-burgundy px-5 py-4 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-gray-300"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Manzil</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">{t.checkout.address}</label>
                     <textarea
-                      placeholder="Yetkazib berish manzilini kiriting"
+                      placeholder={t.checkout.addressPlaceholder}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                       rows={3}
                       className="w-full bg-cream border-2 border-transparent focus:border-burgundy px-5 py-4 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-gray-300 resize-none"
@@ -195,8 +206,8 @@ function CartPage() {
                 <div className="h-[1px] bg-gray-100 w-full mt-4" />
 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500 font-bold text-sm">Jami:</span>
-                  <span className="text-2xl font-extrabold text-burgundy tracking-tight">{formatPrice(totalPrice)}</span>
+                  <span className="text-gray-400 font-bold text-sm">{t.cart.total}:</span>
+                  <span className="text-2xl font-extrabold text-burgundy tracking-tight">{formatPrice(totalPrice, t.cart.currency)}</span>
                 </div>
 
                 <motion.button
@@ -207,9 +218,9 @@ function CartPage() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.89.03-.24.36-.49.99-.74 3.88-1.69 6.47-2.8 7.77-3.32 3.69-1.48 4.45-1.74 4.95-1.75.11 0 .35.03.5.16.14.12.18.28.2.46-.02.04-.01.12-.02.16z"/>
                   </svg>
-                  Telegram orqali buyurtma
+                  {t.checkout.submit}
                 </motion.button>
-                <p className="text-[10px] text-gray-400 font-medium text-center uppercase tracking-widest">Buyurtma Telegram orqali tasdiqlanadi</p>
+                <p className="text-[10px] text-gray-400 font-medium text-center uppercase tracking-widest">{t.checkout.confirmNote}</p>
               </motion.div>
             </div>
           )}

@@ -4,24 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
+import { useLang } from "@/store/lang-context";
+
 export default function CategoryGrid() {
+  const { t } = useLang();
+  
   const categories = [
     {
       id: "liquid",
-      name: "Suyuq mahsulotlar",
-      desc: "Gellar, sovunlar va yuvish vositalari",
+      name: t.categories.liquid,
+      desc: t.categories.liquidDesc,
       img: "/category-liquids.png",
     },
     {
       id: "capsules",
-      name: "Kapsula va granulalar",
-      desc: "Xushbo'ylantirgichlar va yuvish kapsulalari",
+      name: t.categories.capsules,
+      desc: t.categories.capsulesDesc,
       img: "/category-capsules.png",
     },
     {
       id: "household",
-      name: "Ro'zg'or buyumlari",
-      desc: "Savatlar va uy-ro'zg'or jihozlari",
+      name: t.categories.household,
+      desc: t.categories.householdDesc,
       img: "/category-household.png",
     },
   ];
@@ -40,7 +44,7 @@ export default function CategoryGrid() {
             viewport={{ once: true }}
             className="text-burgundy font-semibold uppercase tracking-widest text-xs mb-4 block"
           >
-            Kategoriyalar
+            {t.categories.tagline}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -49,7 +53,7 @@ export default function CategoryGrid() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight"
           >
-            Mahsulot turlari
+            {t.categories.title}
           </motion.h2>
         </div>
 

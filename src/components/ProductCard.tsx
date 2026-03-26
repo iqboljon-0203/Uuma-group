@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Product, formatPrice } from "@/data/products";
 import { useCart } from "@/store/cart-context";
 import { useToast } from "@/store/toast-context";
@@ -11,7 +12,12 @@ interface ProductCardProps {
   product: Product;
 }
 
+import { useLang } from "@/store/lang-context";
+
+import ProductSchema from "./ProductSchema";
+
 export default function ProductCard({ product }: ProductCardProps) {
+  const { t } = useLang();
   const { addItem } = useCart();
   const { show } = useToast();
   const [selectedVolume, setSelectedVolume] = useState(product.volume);
@@ -19,11 +25,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = () => {
     addItem(product);
-    show(`${product.name} savatga qo'shildi!`);
+    show(`${product.id === 2 ? t.product.names.belizna : 
+           product.id === 4 ? t.product.names.soap : 
+           product.id === 7 ? t.product.names.basket : 
+           product.name} ${t.product.added}!`);
   };
 
   return (
-    <motion.div
+    <>
+      <ProductSchema product={product} currency={t.cart.currency} />
+      <motion.div
       layout
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -47,15 +58,20 @@ export default function ProductCard({ product }: ProductCardProps) {
                   : "bg-burgundy text-white"
               }`}
             >
-              {product.badge}
+              {Object.keys(t.product.badges).includes(product.badge) 
+                ? (t.product.badges as any)[product.badge] 
+                : product.badge}
             </motion.span>
           )}
         </div>
 
         {/* Image */}
-        <div className={`relative h-56 w-full flex items-center justify-center p-6 ${
-          isPremium ? "bg-gradient-to-br from-[#FFFCF0] to-[#FFF8E7]" : "bg-[#FAFAFA]"
-        }`}>
+        <Link 
+          href={`/product/${product.slug}`}
+          className={`relative h-56 w-full flex items-center justify-center p-6 cursor-pointer bg-white transition-all hover:scale-105 ${
+            isPremium ? "bg-gradient-to-br from-[#FFFCF0] to-[#FFF8E7]" : "bg-[#FAFAFA]"
+          }`}
+        >
           <motion.div
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
@@ -72,16 +88,21 @@ export default function ProductCard({ product }: ProductCardProps) {
           
           {/* Quick View Overlay */}
           <div className="absolute inset-0 bg-burgundy/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-        </div>
+        </Link>
 
         {/* Info */}
         <div className="p-5 flex flex-col flex-grow">
-          <span className="text-[10px] font-semibold text-burgundy uppercase tracking-widest mb-1 block">
-            {product.brand}
-          </span>
-          <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight min-h-[40px]">
-            {product.name}
-          </h3>
+          <Link href={`/product/${product.slug}`} className="block group/title">
+            <span className="text-[10px] font-semibold text-burgundy uppercase tracking-widest mb-1 block">
+              {product.brand}
+            </span>
+            <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight min-h-[40px] group-hover/title:text-burgundy transition-colors">
+              {product.id === 2 ? t.product.names.belizna : 
+               product.id === 4 ? t.product.names.soap : 
+               product.id === 7 ? t.product.names.basket : 
+               product.name}
+            </h3>
+          </Link>
           <p className="text-sm text-gray-500 mb-4">{selectedVolume}</p>
 
           {/* Size Switcher or Placeholder */}
@@ -111,7 +132,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center justify-between gap-3 pt-2 mt-auto">
             <div className="flex flex-col">
               <span className="text-lg font-bold text-gray-900">
-                {formatPrice(product.price)}
+                {formatPrice(product.price, t.cart.currency)}
               </span>
             </div>
             
@@ -124,11 +145,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Savatga
+              {t.product.addToCart}
             </motion.button>
           </div>
         </div>
       </div>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }

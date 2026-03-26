@@ -54,6 +54,9 @@ export const metadata: Metadata = {
 
 import { CartProvider } from "@/store/cart-context";
 import { ToastProvider } from "@/store/toast-context";
+import { LangProvider } from "@/store/lang-context";
+import { RecentlyViewedProvider } from "@/store/recently-viewed";
+import SEOManager from "@/components/SEOManager";
 
 export default function RootLayout({
   children,
@@ -62,12 +65,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uz" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
-        <CartProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </CartProvider>
+      <body className="min-h-full flex flex-col font-sans">
+        <LangProvider>
+          <RecentlyViewedProvider>
+            <SEOManager />
+            <CartProvider>
+              <ToastProvider>
+                {children}
+              </ToastProvider>
+            </CartProvider>
+          </RecentlyViewedProvider>
+        </LangProvider>
       </body>
     </html>
   );
