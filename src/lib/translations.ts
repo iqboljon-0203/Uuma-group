@@ -9,13 +9,15 @@ export const translations = {
     nav: {
       home: "Bosh sahifa",
       catalog: "Katalog",
+      about: "Biz haqimizda",
       cart: "Savat",
+      faq: "Savollar",
     },
     hero: {
       tagline: "Premium sifatli tozalash vositalari",
       title: "Uuma Group",
-      subtitle: "Tozalikning yangi darajasi",
-      desc: "Habfer va Jieti brendlari bilan uyingizda mukammal tozalik va xushbo'y iforni yarating. Premium sifat, ayollar uchun maxsus.",
+      subtitle: "Ayollar va uy uchun mahsulotlar",
+      desc: "Habfer va Jieti brendlari bilan uyingizda mukammal tozalik va xushbo'y iforni yarating. Premium sifatli maishiy kimyo mahsulotlari.",
       cta: "Katalogni ko'rish",
       stats: {
         products: "Mahsulotlar",
@@ -57,6 +59,14 @@ export const translations = {
       searchPlaceholder: "Mahsulotlarni qidirish...",
       empty: "Mahsulotlar topilmadi.",
       brands: "Brendlar",
+      resultsLabel: "ta mahsulot topildi",
+      categoryLabel: "Kategoriyalar",
+      sort: {
+        label: "Saralash",
+        newest: "Yangilari avval",
+        priceLow: "Arzonlari avval",
+        priceHigh: "Qimmatlari avval",
+      }
     },
     cart: {
       title: "Sizning savatingiz",
@@ -98,6 +108,69 @@ export const translations = {
       categoryLabel: "Turkum",
       recent: "Siz ko'rgan mahsulotlar",
     },
+    testimonials: {
+      tagline: "Mijozlarimiz fikri",
+      title: "Sifatimiz haqida nima deyishadi?",
+      items: [
+        {
+          name: "Malika Akromova",
+          role: "Uy bekasi",
+          text: "Habfer gellarini ishlatib ko'rdim, hidiga gap yo'q! Kiyimlar juda yumshoq va toza chiqadi. Endi faqat shu mahsulotni olaman.",
+        },
+        {
+          name: "Sitora Ismoilova",
+          role: "Bloger",
+          text: "Jieti mahsulotlari haqiqiy topilma bo'ldi. Ayniqsa oshxona uchun tozalash vositalari effektidan hayratda qoldim. Tavsiya qilaman!",
+        },
+        {
+          name: "Dildora Rahimova",
+          role: "Ishbilarmon ayol",
+          text: "Premium sifat va chiroyli dizayn. Uuma Group mahsulotlari nafaqat yaxshi tozalaydi, balki uyga o'zgacha ifor beradi.",
+        }
+      ]
+    },
+    faq: {
+      tagline: "Yordam",
+      title: "Ko'p beriladigan savollar",
+      items: [
+        {
+          q: "Yetkazib berish qancha vaqt oladi?",
+          a: "Toshkent shahrida buyurtmalar 24 soat ichida yetkaziladi. Viloyat markazlariga 1-3 ish kunida yetkazib beramiz."
+        },
+        {
+          q: "Mahsulotlar xavfsizmi?",
+          a: "Ha, barcha mahsulotlarimiz sertifikatlangan, sifat nazoratidan o'tgan va uy sharoitida foydalanish uchun mutlaqo xavfsiz."
+        },
+        {
+          q: "Ulgurji (optom) savdo bormi?",
+          a: "Ha, bizda ulgurji va chakana savdo yo'lga qo'yilgan. Batafsil ma'lumot uchun CALL CENTER raqamimizga bog'lanishingiz mumkin."
+        },
+        {
+          q: "Showroom qayerda joylashgan?",
+          a: "Bizning showroomimiz Toshkent sh., Yunusobod tumani, Bog'ishamol ko'chasida joylashgan. Xaritani footer qismida ko'rishingiz mumkin."
+        }
+      ]
+    },
+    about: {
+      tagline: "Kompaniya haqida",
+      title: "Uuma Group — Premium sifat standarti",
+      storyTitle: "Bizning tariximiz",
+      storyText: "Uuma Group maishiy kimyo bozorida yangi standartlarni o'rnatish maqsadida tashkil etilgan. Bizning Habfer va Jieti brendlarimiz - bu yillar davomida to'plangan tajriba va eng zamonaviy texnologiyalar mahsulidir. Biz kiyim-kechaklaringiz toza, uyingiz esa xushbo'y iforga to'la bo'lishi uchun har bir komponentni sinchkovlik bilan tanlaymiz.",
+      values: [
+        {
+          title: "Sifat nazorati",
+          text: "Har bir mahsulot laboratoriya sinovlaridan o'tadi va xalqaro standartlarga to'liq javob beradi."
+        },
+        {
+          title: "Mahalliy ishlab chiqarish",
+          text: "O'zbekistonda ishlab chiqarilgan mahsulotlarimiz orqali biz milliy iqtisodiyotga hissa qo'xamiz."
+        },
+        {
+          title: "Ekologik tozalik",
+          text: "Mahsulotlarimiz tabiatga va insonga zarar yetkazmaydigan xavfsiz komponentlardan tashkil topgan."
+        }
+      ]
+    },
     checkout: {
       title: "Buyurtma berish",
       name: "Ismingiz",
@@ -128,13 +201,15 @@ export const translations = {
     nav: {
       home: "Главная",
       catalog: "Каталог",
+      about: "О компании",
       cart: "Корзина",
+      faq: "Вопросы",
     },
     hero: {
       tagline: "Чистящие средства премиум-класса",
       title: "Uuma Group",
-      subtitle: "Новый уровень чистоты",
-      desc: "Создайте идеальную чистоту и аромат в своем доме с брендами Habfer и Jieti. Премиальное качество, созданное специально для женщин.",
+      subtitle: "Товары для женщин и дома",
+      desc: "Создайте идеальную чистоту и аромат в своем доме с брендами Habfer и Jieti. Бытовая химия премиального качества.",
       cta: "Смотреть каталог",
       stats: {
         products: "Текстиль",
@@ -176,6 +251,14 @@ export const translations = {
       searchPlaceholder: "Поиск товаров...",
       empty: "Товары не найдены.",
       brands: "Бренды",
+      resultsLabel: "товаров найдено",
+      categoryLabel: "Категории",
+      sort: {
+        label: "Сортировка",
+        newest: "Сначала новые",
+        priceLow: "Сначала дешевые",
+        priceHigh: "Сначала дорогие",
+      }
     },
     cart: {
       title: "Ваша корзина",
@@ -217,6 +300,69 @@ export const translations = {
       categoryLabel: "Категория",
       recent: "Вы недавно смотрели",
     },
+    testimonials: {
+      tagline: "Отзывы клиентов",
+      title: "Что о нас говорят?",
+      items: [
+        {
+          name: "Малика Акромова",
+          role: "Домохозяйка",
+          text: "Попробовала гели Habfer, аромат просто супер! Одежда очень мягкая и чистая. Теперь буду брать только их.",
+        },
+        {
+          name: "Ситора Исмоилова",
+          role: "Блогер",
+          text: "Продукция Jieti стала настоящим открытием. Особенно поразил эффект чистящих средств для кухни. Рекомендую!",
+        },
+        {
+          name: "Дилдора Рахимова",
+          role: "Бизнес-леди",
+          text: "Премиальное качество и красивый дизайн. Продукты Uuma Group не только хорошо чистят, но и дарят дому особый аромат.",
+        }
+      ]
+    },
+    faq: {
+      tagline: "Помощь",
+      title: "Часто задаваемые вопросы",
+      items: [
+        {
+          q: "Сколько времени занимает доставка?",
+          a: "В Ташкенте доставка заказа занимает до 24 часов. В областные центры доставка осуществляется в течение 1-3 рабочих дней."
+        },
+        {
+          q: "Безопасны ли продукты?",
+          a: "Да, вся наша продукция сертифицирована, прошла контроль качества и абсолютно безопасна для использования в домашних условиях."
+        },
+        {
+          q: "Есть ли оптовые продажи?",
+          a: "Да, у нас налажена как оптовая, так и розничная торговля. Для подробной информации свяжитесь с нашим CALL-центром."
+        },
+        {
+          q: "Где находится шоурум?",
+          a: "Наш шоурум находится в Ташкенте, Юнусабадский район, улица Богишамол. Вы можете увидеть карту в футере."
+        }
+      ]
+    },
+    about: {
+      tagline: "О компании",
+      title: "Uuma Group — Стандарт премиум качества",
+      storyTitle: "Наша история",
+      storyText: "Uuma Group была основана с целью установить новые стандарты на рынке бытовой химии. Наши бренды Habfer и Jieti — это результат многолетнего опыта и самых современных технологий. Мы тщательно подбираем каждый компонент, чтобы ваша одежда была чистой, а ваш дом наполнен приятным ароматом.",
+      values: [
+        {
+          title: "Контроль качества",
+          text: "Каждый продукт проходит лабораторные испытания и полностью соответствует международным стандартам."
+        },
+        {
+          title: "Местное производство",
+          text: "Через наши продукты, произведенные в Узбекистане, мы вносим вклад в национальную экономику."
+        },
+        {
+          title: "Экологичность",
+          text: "Наши продукты состоят из безопасных компонентов, не наносящих вреда природе и человеку."
+        }
+      ]
+    },
     checkout: {
       title: "Оформление заказа",
       name: "Ваше имя",
@@ -247,13 +393,15 @@ export const translations = {
     nav: {
       home: "Home",
       catalog: "Catalog",
+      about: "About Us",
       cart: "Cart",
+      faq: "FAQ",
     },
     hero: {
       tagline: "Premium Cleaning Solutions",
       title: "Uuma Group",
-      subtitle: "New Level of Cleanliness",
-      desc: "Create perfect cleanliness and fragrance in your home with Habfer and Jieti brands. Premium quality, specifically designed for women.",
+      subtitle: "Products for women and home",
+      desc: "Create perfect cleanliness and fragrance in your home with Habfer and Jieti brands. Premium quality household chemicals.",
       cta: "View Catalog",
       stats: {
         products: "Products",
@@ -295,6 +443,14 @@ export const translations = {
       searchPlaceholder: "Search products...",
       empty: "No products found.",
       brands: "Brands",
+      resultsLabel: "products found",
+      categoryLabel: "Categories",
+      sort: {
+        label: "Sort By",
+        newest: "Newest First",
+        priceLow: "Price: Low to High",
+        priceHigh: "Price: High to Low",
+      }
     },
     cart: {
       title: "Your Cart",
@@ -335,6 +491,69 @@ export const translations = {
       usage: "How to Use",
       categoryLabel: "Category",
       recent: "Recently Viewed",
+    },
+    testimonials: {
+      tagline: "Happy Customers",
+      title: "What people say about us",
+      items: [
+        {
+          name: "Malika Akromova",
+          role: "Homemaker",
+          text: "I tried Habfer gels, the scent is amazing! Clothes come out very soft and clean. I will only buy these from now on.",
+        },
+        {
+          name: "Sitora Ismoilova",
+          role: "Blogger",
+          text: "Jieti products were a real find. I was especially impressed with the effect of kitchen cleaning products. Highly recommend!",
+        },
+        {
+          name: "Dildora Rahimova",
+          role: "Business Woman",
+          text: "Premium quality and beautiful design. Uuma Group products not only clean well but also add a special fragrance to the home.",
+        }
+      ]
+    },
+    faq: {
+      tagline: "Support",
+      title: "Frequently Asked Questions",
+      items: [
+        {
+          q: "How long does delivery take?",
+          a: "Delivery in Tashkent takes within 24 hours. For regional centers, we deliver within 1-3 business days."
+        },
+        {
+          q: "Are the products safe?",
+          a: "Yes, all our products are certified, quality-controlled, and completely safe for home use."
+        },
+        {
+          q: "Do you offer wholesale?",
+          a: "Yes, we handle both wholesale and retail trade. For more details, please contact our CALL CENTER."
+        },
+        {
+          q: "Where is the showroom located?",
+          a: "Our showroom is located in Tashkent, Yunusobod district, Bogishamol street. You can see the location in the footer."
+        }
+      ]
+    },
+    about: {
+      tagline: "About Us",
+      title: "Uuma Group — Premium Quality Standard",
+      storyTitle: "Our Story",
+      storyText: "Uuma Group was founded with the goal of setting new standards in the household chemical market. Our Habfer and Jieti brands are the result of years of experience and state-of-the-art technologies. We carefully select every component so that your clothes are clean and your home is filled with pleasant fragrance.",
+      values: [
+        {
+          title: "Quality Control",
+          text: "Every product undergoes laboratory testing and fully complies with international standards."
+        },
+        {
+          title: "Local Production",
+          text: "Through our products manufactured in Uzbekistan, we contribute to the national economy."
+        },
+        {
+          title: "Eco-Friendly",
+          text: "Our products consist of safe components that do not harm nature or humans."
+        }
+      ]
     },
     checkout: {
       title: "Checkout",

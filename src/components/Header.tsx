@@ -25,7 +25,9 @@ export default function Header() {
 
   const navLinks = [
     { href: "/", label: t.nav.home },
+    { href: "/about", label: t.nav.about },
     { href: "/catalog", label: t.nav.catalog },
+    { href: "/#faq", label: t.nav.faq },
   ];
 
   const languages: { code: Language; label: string; flag: string }[] = [
@@ -36,8 +38,8 @@ export default function Header() {
 
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
-  const isHome = pathname === "/";
-  const isLightText = isHome && !scrolled;
+  const isHeroPage = pathname === "/" || pathname === "/about";
+  const isLightText = isHeroPage && !scrolled;
 
   return (
     <>

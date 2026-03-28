@@ -61,12 +61,12 @@ export default function Hero() {
             {t.hero.tagline}
           </motion.div>
 
-          <h1 className="flex flex-col gap-4 text-white mb-8">
+          <h1 className="flex flex-col gap-4 mb-8">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight"
+              className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight text-gold drop-shadow-2xl"
             >
               {t.hero.title}
             </motion.span>
