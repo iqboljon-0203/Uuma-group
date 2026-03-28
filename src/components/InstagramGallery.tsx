@@ -2,29 +2,62 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-
-const GALLERY_IMAGES = [
-  { src: "/hero-products.png", alt: "Uuma Group Products" },
-  { src: "/hero-lifestyle.png", alt: "Lifestyle shots" },
-  { src: "/category-liquids.png", alt: "Habfer Gel" },
-  { src: "/category-capsules.png", alt: "Scented Capsules" },
-  { src: "/category-household.png", alt: "Household accessories" },
-  { src: "/habfer-gel-4l.png", alt: "Premium Care" },
-];
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useLang } from "@/store/lang-context";
 
 export default function InstagramGallery() {
+  const { t } = useLang();
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchImages() {
+      const keys = ["insta_img_1", "insta_img_2", "insta_img_3", "insta_img_4", "insta_img_5", "insta_img_6"];
+      const { data } = await supabase
+        .from("site_content")
+        .select("key, content")
+        .in("key", keys);
+
+      if (data && data.length > 0) {
+        const imageMap: Record<string, string> = {};
+        data.forEach((item) => {
+          imageMap[item.key] = item.content;
+        });
+        
+        // Only use fallback if the key is MISSING or NULL, let empty string be empty
+        const orderedImages = keys.map(key => {
+          const val = imageMap[key];
+          return val === null || val === undefined ? "https://images.unsplash.com/photo-1558444479-c8a51bc730f0?q=80&w=800&auto=format&fit=crop" : val;
+        }).filter(img => img !== ""); // Filter out empty images 
+        
+        setImages(orderedImages);
+      } else {
+        // Fallback static images
+        setImages([
+          "/hero-products.png",
+          "/hero-lifestyle.png",
+          "/category-liquids.png",
+          "/category-capsules.png",
+          "/category-household.png",
+          "/habfer-gel-4l.png"
+        ]);
+      }
+    }
+    fetchImages();
+  }, []);
+
   return (
     <section className="py-24 bg-white overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div className="max-w-xl">
+          <div className="max-w-xl space-y-4">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-burgundy font-bold uppercase tracking-widest text-[11px] mb-4 block"
+              className="text-burgundy font-bold uppercase tracking-widest text-[11px] block"
             >
-              Biz ijtimoiy tarmoqlarda
+              {t.instagram.tagline}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -33,7 +66,7 @@ export default function InstagramGallery() {
               transition={{ delay: 0.1 }}
               className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight"
             >
-              Instagram sahifamizdan lavhalar
+              {t.instagram.title}
             </motion.h2>
           </div>
           <motion.a 
@@ -54,7 +87,7 @@ export default function InstagramGallery() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {GALLERY_IMAGES.map((img, i) => (
+          {images.slice(0, 6).map((src, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, scale: 0.8 }}
@@ -64,8 +97,8 @@ export default function InstagramGallery() {
               className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer"
             >
               <Image
-                src={img.src}
-                alt={img.alt}
+                src={src || "/brand-logo.png"}
+                alt={`Instagram Gallery ${i + 1}`}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />

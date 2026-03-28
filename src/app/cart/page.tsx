@@ -31,7 +31,7 @@ function CartPage() {
     return product.name;
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     const { name, phone, address } = formData;
     if (!name || !phone || !address) {
       show(t.checkout.error);
@@ -53,8 +53,33 @@ function CartPage() {
 
     message += `\n${t.checkout.telegram.total}: ${formatPrice(totalPrice, t.cart.currency)}*`;
 
-    const telegramUrl = `https://t.me/uumagroup?text=${encodeURIComponent(message)}`;
-    window.open(telegramUrl, "_blank");
+    try {
+      show("Buyurtma yuborilmoqda...");
+      const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: name,
+          customer_phone: phone,
+          customer_address: address,
+          items: items.map(i => ({ id: i.product.id, name: getProductName(i.product), qty: i.qty })),
+          total_amount: totalPrice,
+          message: message
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        show(t.checkout.success);
+        // Savatni tozalash qismi (agar kerak bo'lsa)
+        setTimeout(() => window.location.href = "/", 2000);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (err: any) {
+      console.error(err);
+      show("Xato yuz berdi. Iltimos qaytadan urinib ko'ring.");
+    }
   };
 
   return (

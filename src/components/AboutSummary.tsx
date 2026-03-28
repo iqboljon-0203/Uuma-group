@@ -4,9 +4,20 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useLang } from "@/store/lang-context";
+import { getSiteContent } from "@/lib/db";
+import { useEffect, useState } from "react";
 
 export default function AboutSummary() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const [content, setContent] = useState<any>(null);
+
+  useEffect(() => {
+    getSiteContent(['about_summary', 'about_image', 'about_title', 'about_tagline']).then(data => {
+      setContent(data);
+    });
+  }, []);
+
+  const d = (key: string, staticText: string) => content?.[key]?.[lang] || staticText;
 
   return (
     <section className="py-24 bg-white overflow-hidden">
@@ -21,10 +32,11 @@ export default function AboutSummary() {
               className="relative aspect-square md:aspect-[4/3] rounded-[40px] overflow-hidden shadow-2xl"
             >
               <Image
-                src="/about-summary.png"
+                src={content?.about_image || "/about-summary.png"}
                 alt="Uuma Group Premium Products"
                 fill
                 className="object-cover transition-transform duration-700 hover:scale-105"
+                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             </motion.div>
@@ -42,7 +54,7 @@ export default function AboutSummary() {
               viewport={{ once: true }}
               className="text-burgundy font-bold uppercase tracking-widest text-[11px] mb-4 block"
             >
-              {t.about.tagline}
+              {d('about_tagline', t.about.tagline)}
             </motion.span>
             
             <motion.h2
@@ -52,7 +64,7 @@ export default function AboutSummary() {
               transition={{ delay: 0.1 }}
               className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-8"
             >
-              {t.about.title}
+              {d('about_title', t.about.title)}
             </motion.h2>
 
             <motion.p
@@ -62,7 +74,7 @@ export default function AboutSummary() {
               transition={{ delay: 0.2 }}
               className="text-gray-500 text-lg leading-relaxed mb-10"
             >
-              {t.about.storyText.slice(0, 200)}...
+              {d('about_summary', t.about.storyText)}
             </motion.p>
 
             <motion.div
@@ -75,7 +87,7 @@ export default function AboutSummary() {
                 href="/about"
                 className="w-full sm:w-auto px-10 py-5 bg-burgundy text-white rounded-3xl font-bold text-sm shadow-xl shadow-burgundy/20 hover:bg-burgundy-dark hover:scale-105 transition-all text-center inline-block"
               >
-                Batafsil ma'lumot
+                {t.common.more}
               </Link>
             </motion.div>
           </div>

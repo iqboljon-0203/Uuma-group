@@ -1,14 +1,22 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import { useLang } from "@/store/lang-context";
+import { getFAQ } from "@/lib/db";
+import { useEffect, useState } from "react";
 
 export default function FAQSection() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const [items, setItems] = useState<any[]>([]);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const faqItems = t.faq.items;
+  useEffect(() => {
+    getFAQ().then(data => {
+      setItems(data || []);
+    });
+  }, []);
+
+  const faqItems = items.length > 0 ? items : t.faq.items;
 
   return (
     <section id="faq" className="py-24 bg-cream scroll-mt-24">
@@ -33,50 +41,69 @@ export default function FAQSection() {
               {t.faq.title}
             </motion.h2>
             <p className="text-gray-500 text-lg leading-relaxed">
-              Agar savollaringiz bo'lsa, istalgan vaqtda biz bilan bog'lanishingiz mumkin.
+              {t.faq.subtitle}
             </p>
           </div>
 
-          <div className="lg:w-2/3 space-y-4">
-            {faqItems.map((item: any, i: number) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-              >
-                <button
-                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                  className="w-full px-8 py-6 text-left flex items-center justify-between"
+          <div className="space-y-4">
+            {faqItems.map((item, index) => {
+              const isOpen = openIndex === index;
+              const q = typeof item.question === 'string' ? item.question : item.question?.[lang] || item.q;
+              const a = typeof item.answer === 'string' ? item.answer : item.answer?.[lang] || item.a;
+              
+              if (!q) return null;
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`bg-white rounded-3xl overflow-hidden border transition-all duration-500 ${
+                    isOpen ? "border-burgundy/20 shadow-xl shadow-burgundy/5" : "border-gray-100 hover:border-burgundy/10"
+                  }`}
                 >
-                  <span className="text-lg font-bold text-gray-900 pr-8">{item.q}</span>
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center transition-all duration-300 ${openIndex === i ? 'bg-burgundy text-white' : 'text-gray-400'}`}>
-                    <svg 
-                      className={`transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`} 
-                      width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-                    >
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </div>
-                </button>
-                <AnimatePresence>
-                  {openIndex === i && (
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    className="w-full px-8 py-6 flex items-center justify-between text-left group"
+                  >
+                    <span className={`text-lg font-bold transition-colors duration-300 ${
+                      isOpen ? "text-burgundy" : "text-gray-900 group-hover:text-burgundy"
+                    }`}>
+                      {q}
+                    </span>
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      className={`p-2 rounded-xl transition-colors duration-300 ${
+                        isOpen ? "bg-burgundy text-white" : "bg-gray-50 text-gray-400 group-hover:bg-burgundy/10 group-hover:text-burgundy"
+                      }`}
                     >
-                      <div className="px-8 pb-8 text-gray-500 leading-relaxed">
-                        {item.a}
-                      </div>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
+                  </button>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+                      >
+                        <div className="px-8 pb-8 pt-2">
+                          <p className="text-gray-500 leading-relaxed font-medium">
+                            {a}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

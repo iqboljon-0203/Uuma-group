@@ -17,6 +17,8 @@ import Link from "next/link";
 import RecentlyViewedList from "@/components/RecentlyViewedList";
 import { useRecentlyViewed } from "@/store/recently-viewed";
 
+import { supabase } from "@/lib/supabase";
+
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const router = useRouter();
@@ -25,15 +27,39 @@ export default function ProductDetailPage() {
   const { show } = useToast();
   const { addToRecent } = useRecentlyViewed();
   
-  const product = products.find((p) => p.slug === slug);
+  const [product, setProduct] = useState<any>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState("");
 
   useEffect(() => {
-    if (product) {
-      setSelectedSize(product.sizes[0]);
-      addToRecent(product);
+    async function loadProduct() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+      
+      if (data) {
+        setProduct(data);
+        setSelectedSize(data.sizes?.[0] || "");
+        addToRecent(data);
+
+        // Fetch related
+        const { data: related } = await supabase
+          .from('products')
+          .select('*')
+          .eq('category_id', data.category_id)
+          .neq('id', data.id)
+          .limit(4);
+        setRelatedProducts(related || []);
+      }
+      setLoading(false);
     }
-  }, [product, addToRecent]);
+    loadProduct();
+  }, [slug]);
+
+  if (loading) return <div className="h-screen bg-cream" />;
 
   if (!product) {
     return (
@@ -46,21 +72,10 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     addItem({ ...product, volume: selectedSize });
-    const name = product.id === 2 ? t.product.names.belizna : 
-                 product.id === 4 ? t.product.names.soap : 
-                 product.id === 7 ? t.product.names.basket : 
-                 product.name;
-    show(`${name} ${t.product.added}!`);
+    show(`${product.name} ${t.product.added}!`);
   };
 
-  const relatedProducts = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
-
-  const translatedName = product.id === 2 ? t.product.names.belizna : 
-                        product.id === 4 ? t.product.names.soap : 
-                        product.id === 7 ? t.product.names.basket : 
-                        product.name;
+  const translatedName = product.name;
 
   return (
     <div className="flex flex-col min-h-screen bg-cream">
@@ -132,18 +147,18 @@ export default function ProductDetailPage() {
               {/* Description */}
               <div className="mb-10">
                 <p className="text-gray-600 leading-relaxed text-lg italic border-l-4 border-burgundy/20 pl-6 py-2">
-                  {(product.desc as any)[lang]}
+                  {product.description?.[lang] || product.description}
                 </p>
               </div>
 
               {/* Size Selector */}
-              {product.sizes.length > 0 && (
+              {product.sizes && product.sizes.length > 0 && (
                 <div className="mb-10">
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-4">
                     O'lcham / Hanjm
                   </span>
                   <div className="flex flex-wrap gap-3">
-                    {product.sizes.map((size) => (
+                    {product.sizes.map((size: string) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}

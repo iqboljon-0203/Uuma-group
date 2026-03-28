@@ -1,14 +1,23 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useLang } from "@/store/lang-context";
-import { useState } from "react";
+import { getTestimonials } from "@/lib/db";
 
 export default function TestimonialsSection() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const [items, setItems] = useState<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const testimonials = t.testimonials.items;
+  useEffect(() => {
+    getTestimonials().then(data => {
+      setItems(data || []);
+    });
+  }, []);
+
+  const testimonials = items.length > 0 ? items : t.testimonials.items;
 
   return (
     <section className="py-24 bg-white relative overflow-hidden">
@@ -44,39 +53,42 @@ export default function TestimonialsSection() {
               animate={{ x: `-${activeIndex * 100}%` }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              {testimonials.map((item: any, i: number) => (
-                <div key={i} className="w-full flex-shrink-0 px-4">
-                  <div className="bg-cream rounded-3xl p-8 md:p-12 border border-gray-100 shadow-xl shadow-gray-200/50 relative">
-                    <div className="absolute top-8 right-8 text-gold/20">
-                      <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.437.917-4 3.638-4 5.849h3.999v10h-9.999z" />
-                      </svg>
-                    </div>
-                    
-                    <div className="flex gap-1 mb-6">
-                      {[...Array(5)].map((_, star) => (
-                        <svg key={star} className="text-gold" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              {testimonials.map((item, index) => {
+                const text = typeof item.text === 'string' ? item.text : item.text?.[lang] || item.text;
+                const role = typeof item.role === 'string' ? item.role : item.role?.[lang] || item.role;
+                
+                if (activeIndex !== index) return null;
+                
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="pt-10"
+                  >
+                    <div className="flex gap-1 mb-8">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
                     </div>
-
-                    <p className="text-xl md:text-2xl text-gray-800 font-medium leading-relaxed italic mb-10">
-                      "{item.text}"
+                    <p className="text-xl md:text-2xl text-gray-900 leading-relaxed font-medium italic mb-10">
+                      "{text}"
                     </p>
-
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-burgundy/10 rounded-full flex items-center justify-center text-burgundy font-bold text-xl">
+                      <div className="w-14 h-14 bg-burgundy/10 rounded-full flex items-center justify-center text-burgundy font-bold text-lg">
                         {item.name[0]}
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.name}</h4>
-                        <p className="text-sm text-gray-500">{item.role}</p>
+                        <h4 className="font-extrabold text-gray-900">{item.name}</h4>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{role}</p>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
 

@@ -1,14 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { products } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { useLang } from "@/store/lang-context";
 import Link from "next/link";
+import { getProducts } from "@/lib/db";
+import { useEffect, useState } from "react";
 
 export default function FeaturedProducts() {
   const { t } = useLang();
-  const featured = products.filter((p) => p.featured);
+  const [featured, setFeatured] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getProducts({ featured: true }).then(data => {
+      setFeatured(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return null;
 
   return (
     <section className="py-24 bg-white relative overflow-hidden">

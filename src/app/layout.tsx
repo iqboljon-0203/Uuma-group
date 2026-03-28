@@ -1,25 +1,38 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/store/cart-context";
+import { ToastProvider } from "@/store/toast-context";
+import { LangProvider } from "@/store/lang-context";
+import { RecentlyViewedProvider } from "@/store/recently-viewed";
+import SEOManager from "@/components/SEOManager";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin", "cyrillic"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+const outfit = Outfit({ 
+  subsets: ["latin"], 
+  variable: "--font-outfit",
+  display: 'swap',
+});
+const inter = Inter({ 
+  subsets: ["latin"], 
+  variable: "--font-inter",
+  display: 'swap',
 });
 
 export const viewport: Viewport = {
+  themeColor: "#800020",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5, // Accessablity uchun yaxshi
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://uuma.uz"),
-  title: "Uuma Group – Tozalikning Yangi Darajasi | Premium Maishiy Kimyo",
-  description:
-    "Uuma Group - O'zbekistondagi premium maishiy kimyo mahsulotlari ishlab chiqaruvchisi. Habfer va Jieti brendlari bilan uyingizga mukammal tozalik va xushbo'y hid olib keling.",
-  keywords: ["Uuma Group", "Habfer", "Jieti", "maishiy kimyo", "yuvish geli", "kapsulalar", "O'zbekiston", "tozalik vositalari"],
+  metadataBase: new URL("https://uumagroup.uz"),
+  title: {
+    default: "Uuma Group | Premium maishiy kimyo mahsulotlari",
+    template: "%s | Uuma Group"
+  },
+  description: "Habfer va Jieti brendlari - uyingizda mukammal tozalik va xushbo'y ifor yaratishingiz uchun premium sifatli maishiy kimyo.",
+  keywords: ["Uuma Group", "Habfer", "Jieti", "maishiy kimyo", "yuvish geli", "kapsulalar", "O'zbekiston", "tozalik vositalari", "Mirobod tumani"],
   authors: [{ name: "Uuma Group Team" }],
   icons: {
     icon: "/favicon.svg",
@@ -28,13 +41,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Uuma Group – Tozalikning Yangi Darajasi",
     description: "Premium maishiy kimyo mahsulotlari: Habfer va Jieti.",
-    url: "https://uuma.uz", // O'zgartirishingiz mumkin
+    url: "https://uumagroup.uz",
     siteName: "Uuma Group",
     images: [
       {
-        url: "/og-image.png", // Agar rasm bo'lsa
+        url: "/og-image.png",
         width: 1200,
         height: 630,
+        alt: "Uuma Group Premium Products"
       },
     ],
     locale: "uz_UZ",
@@ -49,14 +63,18 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
+  verification: {
+    google: "google-site-verification-id", // Bu yerga Google Search Console kodini qo'yasiz
+  }
 };
-
-import { CartProvider } from "@/store/cart-context";
-import { ToastProvider } from "@/store/toast-context";
-import { LangProvider } from "@/store/lang-context";
-import { RecentlyViewedProvider } from "@/store/recently-viewed";
-import SEOManager from "@/components/SEOManager";
 
 export default function RootLayout({
   children,
@@ -64,8 +82,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uz" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
+    <html lang="uz" className={`${outfit.variable} ${inter.variable} h-full antialiased`}>
+      <body className={`min-h-full flex flex-col font-sans ${inter.className}`}>
         <LangProvider>
           <RecentlyViewedProvider>
             <SEOManager />

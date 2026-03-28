@@ -27,6 +27,8 @@ export default function CatalogPage() {
 
 import ProductSkeleton from "@/components/ProductSkeleton";
 
+import { getProducts } from "@/lib/db";
+
 function CatalogContent() {
   const { t, lang } = useLang();
   const searchParams = useSearchParams();
@@ -35,8 +37,16 @@ function CatalogContent() {
   const [sortBy, setSortBy] = useState("newest");
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getProducts().then(data => {
+      setAllProducts(data || []);
+      setIsLoading(false);
+    });
+  }, []);
 
   const categories = [
     { id: "all", label: t.catalog.all },
@@ -45,8 +55,6 @@ function CatalogContent() {
     { id: "household", label: t.categories.household },
   ];
 
-  const brands = ["all", ...Array.from(new Set(products.map((p) => p.brand)))];
-
   const sortOptions = [
     { id: "newest", label: t.catalog.sort.newest },
     { id: "price-low", label: t.catalog.sort.priceLow },
@@ -54,38 +62,30 @@ function CatalogContent() {
   ];
 
   useEffect(() => {
-    setIsLoading(true);
+    let result = [...allProducts];
     
-    const timer = setTimeout(() => {
-      let result = [...products];
-      
-      if (searchQuery.trim() !== "") {
-        const q = searchQuery.toLowerCase();
-        result = result.filter((p) => 
-          p.name.toLowerCase().includes(q) || 
-          p.brand.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q)
-        );
+    if (searchQuery.trim() !== "") {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) => 
+        p.name.toLowerCase().includes(q) || 
+        p.brand.toLowerCase().includes(q)
+      );
+    }
+    
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case "price-low":
+          return a.price - b.price;
+        case "price-high":
+          return b.price - a.price;
+        case "newest":
+        default:
+          return b.id < a.id ? -1 : 1; // Adjust based on ID type
       }
-      
-      result.sort((a, b) => {
-        switch (sortBy) {
-          case "price-low":
-            return a.price - b.price;
-          case "price-high":
-            return b.price - a.price;
-          case "newest":
-          default:
-            return b.id - a.id;
-        }
-      });
+    });
 
-      setFilteredProducts(result);
-      setIsLoading(false);
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery, sortBy]);
+    setFilteredProducts(result);
+  }, [searchQuery, sortBy, allProducts]);
 
   return (
     <div className="flex flex-col min-h-screen">

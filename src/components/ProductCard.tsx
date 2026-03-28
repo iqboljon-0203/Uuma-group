@@ -97,10 +97,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.brand}
             </span>
             <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight min-h-[40px] group-hover/title:text-burgundy transition-colors">
-              {product.id === 2 ? t.product.names.belizna : 
-               product.id === 4 ? t.product.names.soap : 
-               product.id === 7 ? t.product.names.basket : 
-               product.name}
+              {product.name}
             </h3>
           </Link>
           <p className="text-sm text-gray-500 mb-4">{selectedVolume}</p>

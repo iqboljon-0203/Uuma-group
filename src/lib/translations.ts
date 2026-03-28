@@ -85,7 +85,7 @@ export const translations = {
       pages: "Sahifalar",
       categories: "Kategoriyalar",
       contact: "Aloqa",
-      address: "Toshkent sh., Yunusobod tumani, Bog'ishamol ko'chasi, 24-uy",
+      address: "Toshkent sh., Mirobod tumani",
       workHours: "Ish tartibi: 09:00 - 18:00 (Du - Sha)",
       allRights: "Barcha huquqlar himoyalangan.",
     },
@@ -129,9 +129,14 @@ export const translations = {
         }
       ]
     },
+    instagram: {
+      tagline: "Biz ijtimoiy tarmoqlarda",
+      title: "Instagram sahifamizdan lavhalar",
+    },
     faq: {
       tagline: "Yordam",
       title: "Ko'p beriladigan savollar",
+      subtitle: "Agar savollaringiz bo'lsa, istalgan vaqtda biz bilan bog'lanishingiz mumkin.",
       items: [
         {
           q: "Yetkazib berish qancha vaqt oladi?",
@@ -191,6 +196,10 @@ export const translations = {
         products: "📦 *Mahsulotlar:*",
         total: "💰 *Jami",
       }
+    },
+    common: {
+      more: "Batafsil ma'lumot",
+      viewAll: "Hammasini ko'rish",
     }
   },
   ru: {
@@ -277,7 +286,7 @@ export const translations = {
       pages: "Страницы",
       categories: "Категории",
       contact: "Контакты",
-      address: "г. Ташкент, Юнусабадский р-н, ул. Богишамол, 24",
+      address: "г. Ташкент, Мирабадский р-н",
       workHours: "График работы: 09:00 - 18:00 (Пн - Сб)",
       allRights: "Все права защищены.",
     },
@@ -321,9 +330,14 @@ export const translations = {
         }
       ]
     },
+    instagram: {
+      tagline: "Мы в социальных сетях",
+      title: "Кадры из нашего Instagram",
+    },
     faq: {
       tagline: "Помощь",
       title: "Часто задаваемые вопросы",
+      subtitle: "Если у вас есть вопросы, вы можете связаться с нами в любое время.",
       items: [
         {
           q: "Сколько времени занимает доставка?",
@@ -383,6 +397,10 @@ export const translations = {
         products: "📦 *Товары:*",
         total: "💰 *Итого",
       }
+    },
+    common: {
+      more: "Подробнее",
+      viewAll: "Смотреть все",
     }
   },
   en: {
@@ -469,7 +487,7 @@ export const translations = {
       pages: "Pages",
       categories: "Categories",
       contact: "Contact",
-      address: "24 Bogishamol St, Yunusobod Dist, Tashkent city",
+      address: "Mirabad dist., Tashkent city",
       workHours: "Working hours: 09:00 - 18:00 (Mon - Sat)",
       allRights: "All rights reserved.",
     },
@@ -513,9 +531,14 @@ export const translations = {
         }
       ]
     },
+    instagram: {
+      tagline: "We are on social networks",
+      title: "Scenes from our Instagram",
+    },
     faq: {
       tagline: "Support",
       title: "Frequently Asked Questions",
+      subtitle: "If you have any questions, you can contact us at any time.",
       items: [
         {
           q: "How long does delivery take?",
@@ -575,6 +598,10 @@ export const translations = {
         products: "📦 *Products:*",
         total: "💰 *Total",
       }
+    },
+    common: {
+      more: "Learn More",
+      viewAll: "View All",
     }
   }
 };

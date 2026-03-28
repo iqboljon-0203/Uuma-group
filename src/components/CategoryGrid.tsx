@@ -3,32 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
 import { useLang } from "@/store/lang-context";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function CategoryGrid() {
-  const { t } = useLang();
-  
-  const categories = [
-    {
-      id: "liquid",
-      name: t.categories.liquid,
-      desc: t.categories.liquidDesc,
-      img: "/category-liquids.png",
-    },
-    {
-      id: "capsules",
-      name: t.categories.capsules,
-      desc: t.categories.capsulesDesc,
-      img: "/category-capsules.png",
-    },
-    {
-      id: "household",
-      name: t.categories.household,
-      desc: t.categories.householdDesc,
-      img: "/category-household.png",
-    },
-  ];
+  const { t, lang } = useLang();
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('categories').select('*').then(({ data }) => {
+      if (data) setCategories(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return null; // Or skeleton
 
   return (
     <section className="py-24 relative overflow-hidden bg-cream">
@@ -67,11 +58,11 @@ export default function CategoryGrid() {
               transition={{ delay: i * 0.15, duration: 0.6 }}
               className="group relative cursor-pointer"
             >
-              <Link href={`/catalog?type=${cat.id}`}>
+              <Link href={`/catalog?type=${cat.slug}`}>
                 <div className="relative h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow-xl shadow-gray-200/50">
                   <Image
-                    src={cat.img}
-                    alt={cat.name}
+                    src={cat.image || "/category-liquids.png"}
+                    alt={cat.name?.[lang] || "Category"}
                     fill
                     className="object-cover transition-transform duration-1000 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -81,10 +72,10 @@ export default function CategoryGrid() {
                   {/* Category Info */}
                   <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col gap-2">
                     <h3 className="text-2xl font-bold text-white tracking-tight">
-                      {cat.name}
+                      {cat.name?.[lang]}
                     </h3>
                     <p className="text-white/70 text-sm leading-relaxed max-w-[240px]">
-                      {cat.desc}
+                      {cat.description?.[lang]}
                     </p>
                     
                     <motion.div

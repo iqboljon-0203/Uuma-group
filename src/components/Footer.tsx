@@ -117,7 +117,7 @@ export default function Footer() {
                 +998 33 171 71 33
               </a>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Bog'ishamol+ko'chasi+24+Toshkent"
+                href="https://www.google.com/maps/search/?api=1&query=Mirobod+tumani+Toshkent"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-gray-400 hover:text-white flex items-start gap-3 group transition-colors"

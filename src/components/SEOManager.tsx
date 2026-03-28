@@ -32,7 +32,7 @@ export default function SEOManager() {
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', `https://uuma.uz${window.location.pathname}`);
+    canonical.setAttribute('href', `https://uumagroup.uz${window.location.pathname}`);
   }, [lang, t]);
 
   return null; // This component doesn't render anything UI-wise

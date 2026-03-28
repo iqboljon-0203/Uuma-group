@@ -6,9 +6,19 @@ import { useRef } from "react";
 import Link from "next/link";
 
 import { useLang } from "@/store/lang-context";
+import { useEffect, useState } from "react";
+import { getSiteContent } from "@/lib/db";
 
 export default function Hero() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const [content, setContent] = useState<any>(null);
+  
+  useEffect(() => {
+    getSiteContent(['hero_title', 'hero_subtitle', 'hero_desc', 'hero_tagline', 'hero_cta']).then(data => {
+      setContent(data);
+    });
+  }, []);
+
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -24,6 +34,9 @@ export default function Hero() {
     { num: "10K+", label: t.hero.stats.customers },
     { num: "100%", label: t.hero.stats.quality },
   ];
+
+  // Helper to get translated content or fallback to static
+  const d = (key: string, staticText: string) => content?.[key]?.[lang] || staticText;
 
   return (
     <section ref={ref} className="relative min-h-[95vh] flex items-center overflow-hidden bg-cream">
@@ -58,7 +71,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full text-cream text-[11px] font-bold uppercase tracking-widest backdrop-blur-md mb-8"
           >
             <span className="w-2 h-2 bg-gold border border-gold/50 rounded-full animate-pulse glow-gold" />
-            {t.hero.tagline}
+            {d('hero_tagline', t.hero.tagline)}
           </motion.div>
 
           <h1 className="flex flex-col gap-4 mb-8">
@@ -68,7 +81,7 @@ export default function Hero() {
               transition={{ delay: 0.3 }}
               className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight text-gold drop-shadow-2xl"
             >
-              {t.hero.title}
+              {d('hero_title', t.hero.title)}
             </motion.span>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
@@ -76,7 +89,7 @@ export default function Hero() {
               transition={{ delay: 0.4 }}
               className="text-2xl md:text-3xl font-light text-gold-light tracking-wide shimmer-text"
             >
-              {t.hero.subtitle}
+              {d('hero_subtitle', t.hero.subtitle)}
             </motion.span>
           </h1>
 
@@ -86,7 +99,7 @@ export default function Hero() {
             transition={{ delay: 0.5 }}
             className="text-lg md:text-xl text-white/80 leading-relaxed max-w-[560px] mb-12 font-medium"
           >
-            {t.hero.desc}
+            {d('hero_desc', t.hero.desc)}
           </motion.p>
 
           <motion.div
@@ -99,7 +112,7 @@ export default function Hero() {
               href="/catalog"
               className="btn--lg bg-burgundy hover:bg-burgundy-dark text-white rounded-xl font-bold flex items-center gap-3 px-8 py-5 shadow-2xl shadow-burgundy/40 group transition-all"
             >
-              {t.hero.cta}
+              {d('hero_cta', t.hero.cta)}
               <motion.svg
                 whileHover={{ x: 5 }}
                 width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
