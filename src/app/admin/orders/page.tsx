@@ -13,7 +13,8 @@ import {
   Clock,
   ExternalLink,
   ChevronRight,
-  Search
+  Search,
+  LogOut
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatPrice } from "@/data/products";
