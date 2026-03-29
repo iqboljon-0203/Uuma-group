@@ -209,11 +209,47 @@ export default function ContentAdmin() {
               {activeTab === "hero" && (
                 <div className="space-y-12 animate-in fade-in slide-in-from-bottom-5 duration-500">
                    <div className="grid grid-cols-1 gap-10">
+                     {/* Subtitles */}
+                     <div className="p-10 bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/5 space-y-6">
+                        <div className="flex items-center gap-3 mb-2">
+                           <Layout size={20} className="text-burgundy" />
+                           <span className="text-xs font-black text-gray-900 uppercase tracking-widest italic">Hero Sarlavha Osti (Subtitle)</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                           {['uz', 'ru', 'en'].map(lang => (
+                             <SectionField 
+                               key={lang}
+                               label={`Subtitle (${lang.toUpperCase()})`}
+                               value={content.hero_subtitle?.[lang] || ""}
+                               onChange={(v) => handleUpdate("hero_subtitle", lang, v)}
+                             />
+                           ))}
+                        </div>
+                     </div>
+
+                     {/* Taglines */}
+                     <div className="p-10 bg-gray-50/20 rounded-[2.5rem] border border-gray-100 space-y-6">
+                        <div className="flex items-center gap-3 mb-2">
+                           <Type size={20} className="text-burgundy" />
+                           <span className="text-xs font-black text-gray-900 uppercase tracking-widest italic">Hero Tepasidagi Matn (Tagline)</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                           {['uz', 'ru', 'en'].map(lang => (
+                             <SectionField 
+                               key={lang}
+                               label={`Tagline (${lang.toUpperCase()})`}
+                               value={content.hero_tagline?.[lang] || ""}
+                               onChange={(v) => handleUpdate("hero_tagline", lang, v)}
+                             />
+                           ))}
+                        </div>
+                     </div>
+
                      {/* Titles */}
                      <div className="p-10 bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/5 space-y-6">
                         <div className="flex items-center gap-3 mb-2">
                            <Layout size={20} className="text-burgundy" />
-                           <span className="text-xs font-black text-gray-900 uppercase tracking-widest italic">Hero Sarlavhalari</span>
+                           <span className="text-xs font-black text-gray-900 uppercase tracking-widest italic">Hero Asosiy Nomi</span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                            {['uz', 'ru', 'en'].map(lang => (

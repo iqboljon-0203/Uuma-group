@@ -32,7 +32,7 @@ export default function Hero() {
   const stats = [
     { num: "50+", label: t.hero.stats.products },
     { num: "10K+", label: t.hero.stats.customers },
-    { num: "100%", label: t.hero.stats.quality },
+    { num: "99%", label: t.hero.stats.quality },
   ];
 
   // Helper to get translated content or fallback to static

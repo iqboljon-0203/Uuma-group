@@ -16,7 +16,7 @@ export const translations = {
     hero: {
       tagline: "Premium sifatli tozalash vositalari",
       title: "Uuma Group",
-      subtitle: "Ayollar va uy uchun mahsulotlar",
+      subtitle: "Ayollar uchun uy mahsulotlari",
       desc: "Habfer va Jieti brendlari bilan uyingizda mukammal tozalik va xushbo'y iforni yarating. Premium sifatli maishiy kimyo mahsulotlari.",
       cta: "Katalogni ko'rish",
       stats: {
