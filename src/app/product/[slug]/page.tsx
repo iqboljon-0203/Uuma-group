@@ -70,8 +70,17 @@ export default function ProductDetailPage() {
     );
   }
 
+  const getDisplayPrice = () => {
+    if (!product) return 0;
+    let basePrice = product.price;
+    if (selectedSize === "M") basePrice += 10000; // M o'lcham uchun +10,000
+    if (selectedSize === "L") basePrice += 20000; // L o'lcham uchun +20,000
+    return basePrice;
+  };
+
   const handleAddToCart = () => {
-    addItem({ ...product, volume: selectedSize });
+    const finalPrice = getDisplayPrice();
+    addItem({ ...product, price: finalPrice, volume: selectedSize });
     show(`${product.name} ${t.product.added}!`);
   };
 
@@ -134,9 +143,14 @@ export default function ProductDetailPage() {
                   {translatedName}
                 </h1>
                 <div className="flex items-center gap-4">
-                  <span className="text-3xl font-bold text-gray-900">
-                    {formatPrice(product.price, t.cart.currency)}
-                  </span>
+                  <motion.span 
+                    key={selectedSize}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-3xl font-bold text-gray-900"
+                  >
+                    {formatPrice(getDisplayPrice(), t.cart.currency)}
+                  </motion.span>
                   <div className="h-6 w-[1px] bg-gray-200" />
                   <span className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
                     {(t.categories as any)[product.category]}

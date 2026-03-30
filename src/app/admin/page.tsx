@@ -12,41 +12,37 @@ import {
   Clock,
   Eye
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
+  const [activityData, setActivityData] = useState<any[]>([]);
   const [stats, setStats] = useState({
     products: 0,
     categories: 0,
     testimonials: 0,
     faq: 0,
+    orders: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchStats() {
-      const [
-        { count: prodCount },
-        { count: catCount },
-        { count: testCount },
-        { count: faqCount }
-      ] = await Promise.all([
-        supabase.from('products').select('*', { count: 'exact', head: true }),
-        supabase.from('categories').select('*', { count: 'exact', head: true }),
-        supabase.from('testimonials').select('*', { count: 'exact', head: true }),
-        supabase.from('faq').select('*', { count: 'exact', head: true }),
-      ]);
-
-      setStats({
-        products: prodCount || 0,
-        categories: catCount || 0,
-        testimonials: testCount || 0,
-        faq: faqCount || 0,
-      });
-      setLoading(false);
+    async function fetchDashboardUpdates() {
+      try {
+        const res = await fetch('/api/admin/stats');
+        const data = await res.json();
+        
+        if (data.success) {
+          setStats(data.stats);
+          setActivityData(data.activityData);
+        }
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    fetchStats();
+    fetchDashboardUpdates();
   }, []);
 
   const statCards = [
@@ -109,32 +105,89 @@ export default function AdminDashboard() {
             <h3 className="text-2xl font-extrabold text-gray-900 tracking-tighter flex items-center gap-3">
               <TrendingUp size={24} className="text-burgundy" /> Sayt Faolligi
             </h3>
-            <select className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-xs font-bold text-gray-500 outline-none hover:bg-white focus:ring-2 focus:ring-burgundy/10 transition-all">
-              <option>Oxirgi 7 kun</option>
-              <option>Oxirgi 30 kun</option>
-            </select>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100 text-[10px] font-black uppercase text-gray-500 tracking-widest">
+               Real vaqt rejimi
+            </div>
           </div>
-          <div className="h-64 bg-gray-50 rounded-[2rem] flex items-center justify-center border border-dashed border-gray-200">
-             <p className="text-gray-400 font-bold uppercase tracking-widest text-[11px]">Grafik ma'lumotlari tez orada...</p>
+          
+          <div className="h-72 relative mt-8">
+             {activityData.some(d => d.count > 0) ? (
+                <div className="h-full flex items-end justify-between gap-6 px-4">
+                   {activityData.map((day, i) => (
+                      <div key={i} className="flex-1 flex flex-col h-full items-center group">
+                         {/* Count Tooltip */}
+                         <div className="mb-2 h-6 flex items-center">
+                            <AnimatePresence>
+                              {day.count > 0 && (
+                                <motion.span 
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="text-[10px] font-black text-burgundy bg-burgundy/5 px-2 py-0.5 rounded-md border border-burgundy/10"
+                                >
+                                   {day.count}
+                                </motion.span>
+                              )}
+                            </AnimatePresence>
+                         </div>
+
+                         {/* Bar Container */}
+                         <div className="relative flex-1 w-full flex items-end justify-center">
+                            <motion.div 
+                              initial={{ height: 0 }}
+                              animate={{ height: `${Math.max((day.count / Math.max(...activityData.map(d => d.count))) * 100, 5)}%` }}
+                              className="w-full max-w-[48px] bg-gradient-to-t from-burgundy/30 via-burgundy/20 to-burgundy/40 border-t-2 border-burgundy/40 rounded-t-2xl group-hover:from-burgundy group-hover:to-burgundy-dark transition-all duration-700 relative shadow-2xl shadow-burgundy/10"
+                            >
+                               {/* Subtle Texture Overlay */}
+                               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none rounded-t-2xl" />
+                               
+                               {/* Active Glow */}
+                               {day.count > 0 && (
+                                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-burgundy/30 blur-xl animate-pulse" />
+                               )}
+                            </motion.div>
+                         </div>
+
+                         {/* Day Label */}
+                         <div className="mt-6 pt-4 border-t border-gray-50 w-full text-center">
+                            <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest group-hover:text-burgundy transition-colors">{day.label}</span>
+                         </div>
+                      </div>
+                   ))}
+                </div>
+             ) : (
+                <div className="h-full flex flex-col items-center justify-center bg-gray-50/50 rounded-[2.5rem] border-2 border-dashed border-gray-100">
+                   <Package size={42} className="text-gray-200 mb-4 animate-bounce duration-3000" />
+                   <p className="text-[11px] font-black text-gray-300 uppercase tracking-[0.2em] italic">Hozircha jimjitlik...</p>
+                </div>
+             )}
           </div>
         </div>
 
         <div className="bg-white rounded-[2rem] border border-gray-100 p-10 shadow-xl shadow-gray-200/10 flex flex-col justify-between">
           <div>
-            <h3 className="text-2xl font-extrabold text-gray-900 tracking-tighter mb-8">Tezkor Havolalar</h3>
+            <div className="flex items-center justify-between mb-8">
+               <h3 className="text-2xl font-extrabold text-gray-900 tracking-tighter">Tezkor Havolalar</h3>
+               <div className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-black rounded-lg uppercase border border-green-100 italic">
+                 Jami: {stats.orders} buyurtma
+               </div>
+            </div>
             <div className="space-y-4">
               {[
-                { label: "Yangi mahsulot qo'shish", href: "/admin/products/new" },
+                { label: "Yangi mahsulot qo'shish", href: "/admin/products" },
                 { label: "About sahifasini tahrirlash", href: "/admin/content#about" },
-                { label: "Mijoz fikrini qo'shish", href: "/admin/testimonials/new" },
+                { label: "Mijoz fikrini qo'shish", href: "/admin/testimonials" },
               ].map((link, i) => (
-                <button key={i} className="w-full text-left px-6 py-4 bg-gray-50 hover:bg-burgundy hover:text-white rounded-2xl text-[13px] font-bold text-gray-900 transition-all shadow-sm">
+                <a key={i} href={link.href} className="block w-full text-left px-6 py-4 bg-gray-50 hover:bg-burgundy hover:text-white rounded-2xl text-[13px] font-bold text-gray-900 transition-all shadow-sm">
                   {link.label}
-                </button>
+                </a>
               ))}
             </div>
           </div>
-          <div className="mt-12 p-8 bg-cream rounded-3xl border border-gold/10 relative overflow-hidden group">
+          <a 
+            href="https://uumagroup.uz" 
+            target="_blank" 
+            className="mt-12 p-8 bg-cream rounded-3xl border border-gold/10 relative overflow-hidden group block hover:shadow-2xl hover:shadow-gold/10 transition-all"
+          >
             <div className="relative z-10 flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold text-gold uppercase tracking-widest mb-2">Jonli Ko'rish</p>
@@ -145,7 +198,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none bg-gradient-to-br from-gold/50 to-transparent" />
-          </div>
+          </a>
         </div>
       </div>
     </div>

@@ -11,8 +11,8 @@ interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product) => void;
-  removeItem: (productId: number) => void;
-  updateQty: (productId: number, delta: number) => void;
+  removeItem: (productId: number, volume?: string) => void;
+  updateQty: (productId: number, delta: number, volume?: string) => void;
   clearCart: () => void;
   totalCount: number;
   totalPrice: number;
@@ -46,25 +46,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+      // Find if item with same ID AND same Volume already in cart
+      const existing = prev.find((i) => i.product.id === product.id && i.product.volume === product.volume);
       if (existing) {
         return prev.map((i) =>
-          i.product.id === product.id ? { ...i, qty: i.qty + 1 } : i
+          (i.product.id === product.id && i.product.volume === product.volume) ? { ...i, qty: i.qty + 1 } : i
         );
       }
       return [...prev, { product, qty: 1 }];
     });
   }, []);
 
-  const removeItem = useCallback((productId: number) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== productId));
+  const removeItem = useCallback((productId: number, volume?: string) => {
+    setItems((prev) => prev.filter((i) => !(i.product.id === productId && i.product.volume === volume)));
   }, []);
 
-  const updateQty = useCallback((productId: number, delta: number) => {
+  const updateQty = useCallback((productId: number, delta: number, volume?: string) => {
     setItems((prev) => {
       return prev
         .map((i) =>
-          i.product.id === productId ? { ...i, qty: i.qty + delta } : i
+          (i.product.id === productId && i.product.volume === volume) ? { ...i, qty: i.qty + delta } : i
         )
         .filter((i) => i.qty > 0);
     });

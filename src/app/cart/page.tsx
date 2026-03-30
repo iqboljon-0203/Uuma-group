@@ -20,7 +20,7 @@ export default function CartPageWrapper() {
 
 function CartPage() {
   const { t } = useLang();
-  const { items, updateQty, removeItem, totalPrice, totalCount } = useCart();
+  const { items, updateQty, removeItem, clearCart, totalPrice, totalCount } = useCart();
   const { show } = useToast();
   const [formData, setFormData] = useState({ name: "", phone: "", address: "" });
 
@@ -62,7 +62,7 @@ function CartPage() {
           customer_name: name,
           customer_phone: phone,
           customer_address: address,
-          items: items.map(i => ({ id: i.product.id, name: getProductName(i.product), qty: i.qty })),
+          items: items.map(i => ({ id: i.product.id, name: getProductName(i.product), qty: i.qty, size: i.product.volume })),
           total_amount: totalPrice,
           message: message
         }),
@@ -71,7 +71,7 @@ function CartPage() {
       const result = await response.json();
       if (result.success) {
         show(t.checkout.success);
-        // Savatni tozalash qismi (agar kerak bo'lsa)
+        clearCart(); // Savatni tozalaymiz
         setTimeout(() => window.location.href = "/", 2000);
       } else {
         throw new Error(result.error);
@@ -131,9 +131,9 @@ function CartPage() {
               {/* Item List */}
               <div className="lg:col-span-2 space-y-6">
                 <AnimatePresence mode="popLayout">
-                  {items.map((item) => (
+                  {items.map((item, idx) => (
                     <motion.div
-                      key={item.product.id}
+                      key={`${item.product.id}-${item.product.volume}-${idx}`}
                       layout
                       initial={{ opacity: 0, x: -50 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -160,14 +160,14 @@ function CartPage() {
                       <div className="flex flex-col items-end gap-3">
                         <div className="flex items-center gap-3 bg-gray-50 p-1 rounded-lg">
                           <button
-                            onClick={() => updateQty(item.product.id, -1)}
+                            onClick={() => updateQty(item.product.id, -1, item.product.volume)}
                             className="w-8 h-8 flex items-center justify-center font-bold text-gray-900 hover:text-burgundy transition-colors"
                           >
                             −
                           </button>
                           <span className="text-sm font-bold min-w-[20px] text-center">{item.qty}</span>
                           <button
-                            onClick={() => updateQty(item.product.id, 1)}
+                            onClick={() => updateQty(item.product.id, 1, item.product.volume)}
                             className="w-8 h-8 flex items-center justify-center font-bold text-gray-900 hover:text-burgundy transition-colors"
                           >
                             +
@@ -178,7 +178,7 @@ function CartPage() {
                         </span>
                       </div>
                       <button
-                        onClick={() => removeItem(item.product.id)}
+                        onClick={() => removeItem(item.product.id, item.product.volume)}
                         className="p-2 text-gray-300 hover:text-red-500 transition-colors"
                       >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

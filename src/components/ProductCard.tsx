@@ -23,8 +23,16 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [selectedVolume, setSelectedVolume] = useState(product.volume);
   const isPremium = product.tier === "premium";
 
+  const getDisplayPrice = () => {
+    let basePrice = product.price;
+    if (selectedVolume === "M") basePrice += 10000;
+    if (selectedVolume === "L") basePrice += 20000;
+    return basePrice;
+  };
+
   const handleAddToCart = () => {
-    addItem(product);
+    const finalPrice = getDisplayPrice();
+    addItem({ ...product, price: finalPrice, volume: selectedVolume });
     show(`${product.id === 2 ? t.product.names.belizna : 
            product.id === 4 ? t.product.names.soap : 
            product.id === 7 ? t.product.names.basket : 
@@ -128,9 +136,14 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <div className="flex items-center justify-between gap-3 pt-2 mt-auto">
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-gray-900">
-                {formatPrice(product.price, t.cart.currency)}
-              </span>
+              <motion.span 
+                key={selectedVolume}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-lg font-bold text-gray-900"
+              >
+                {formatPrice(getDisplayPrice(), t.cart.currency)}
+              </motion.span>
             </div>
             
             <motion.button
