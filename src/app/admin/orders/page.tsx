@@ -222,14 +222,14 @@ export default function OrdersPage() {
                      <CheckCircle size={16} />
                      YAKUNLASH
                    </button>
-                   <button 
-                     onClick={() => updateStatus(selectedOrder.id, 'cancelled')}
-                     disabled={selectedOrder.status === 'cancelled'}
-                     className="flex items-center justify-center gap-2 py-4 rounded-xl bg-gray-100 text-gray-500 font-bold text-xs hover:bg-rose-50 hover:text-rose-500 transition-all disabled:opacity-30"
-                   >
-                     <LogOut className="rotate-180" size={16} />
-                     BEKOR QILISH
-                   </button>
+                    <button 
+                      onClick={() => updateStatus(selectedOrder.id, 'cancelled')}
+                      disabled={selectedOrder.status === 'cancelled'}
+                      className="flex items-center justify-center gap-2 py-4 rounded-xl bg-gray-100 text-gray-500 font-bold text-xs hover:bg-rose-50 hover:text-rose-500 transition-all disabled:opacity-30"
+                    >
+                      <LogOut className="rotate-180" size={16} />
+                      BEKOR QILISH
+                    </button>
                 </div>
               </motion.div>
             ) : (
