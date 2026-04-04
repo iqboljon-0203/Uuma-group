@@ -61,15 +61,33 @@ function CatalogContent() {
     { id: "price-high", label: t.catalog.sort.priceHigh },
   ];
 
+  const parseJsonIfString = (val: any) => {
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        return JSON.parse(val);
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
   useEffect(() => {
     let result = [...allProducts];
     
     if (searchQuery.trim() !== "") {
       const q = searchQuery.toLowerCase();
-      result = result.filter((p) => 
-        p.name.toLowerCase().includes(q) || 
-        p.brand.toLowerCase().includes(q)
-      );
+      result = result.filter((p) => {
+        const name = parseJsonIfString(p.name);
+        const nameUz = typeof name === 'string' ? name : name?.uz || "";
+        const nameRu = typeof name === 'string' ? "" : name?.ru || "";
+        const nameEn = typeof name === 'string' ? "" : name?.en || "";
+        
+        return nameUz.toLowerCase().includes(q) || 
+               nameRu.toLowerCase().includes(q) || 
+               nameEn.toLowerCase().includes(q) || 
+               (p.brand || "").toLowerCase().includes(q);
+      });
     }
     
     result.sort((a, b) => {
@@ -150,28 +168,52 @@ function CatalogContent() {
                         className="absolute top-full left-0 right-0 mt-3 bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-3 z-50 overflow-hidden"
                       >
                         <div className="max-h-[360px] overflow-y-auto no-scrollbar">
-                          {products
-                            .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.brand.toLowerCase().includes(searchQuery.toLowerCase()))
+                          {allProducts
+                            .filter(p => {
+                              const name = parseJsonIfString(p.name);
+                              const nameUz = typeof name === 'string' ? name : name?.uz || "";
+                              const nameRu = typeof name === 'string' ? "" : name?.ru || "";
+                              const nameEn = typeof name === 'string' ? "" : name?.en || "";
+                              const q = searchQuery.toLowerCase();
+                              return nameUz.toLowerCase().includes(q) || 
+                                     nameRu.toLowerCase().includes(q) || 
+                                     nameEn.toLowerCase().includes(q) || 
+                                     (p.brand || "").toLowerCase().includes(q);
+                            })
                             .slice(0, 6)
-                            .map((p) => (
-                              <Link
-                                key={p.id}
-                                href={`/product/${p.slug}`}
-                                className="flex items-center gap-4 p-3 rounded-2xl hover:bg-burgundy/5 transition-all group/item"
-                              >
-                                <div className="relative w-14 h-14 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0">
-                                  <Image src={p.image} alt={p.name} fill className="object-contain p-2 transition-transform duration-500 group-hover/item:scale-110" />
-                                </div>
-                                <div className="flex flex-col">
-                                  <span className="text-[10px] font-bold text-burgundy uppercase tracking-widest">{p.brand}</span>
-                                  <span className="text-sm font-bold text-gray-900 group-hover/item:text-burgundy transition-colors line-clamp-1">
-                                    {p.name}
-                                  </span>
-                                  <span className="text-[11px] text-gray-400 font-medium">UZS {p.price.toLocaleString()}</span>
-                                </div>
-                              </Link>
-                            ))}
-                          {products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.brand.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                            .map((p) => {
+                              const name = parseJsonIfString(p.name);
+                              const displayName = typeof name === 'string' ? name : name?.[lang] || name?.uz || "";
+                              return (
+                                <Link
+                                  key={p.id}
+                                  href={`/product/${p.slug}`}
+                                  className="flex items-center gap-4 p-3 rounded-2xl hover:bg-burgundy/5 transition-all group/item"
+                                >
+                                  <div className="relative w-14 h-14 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0">
+                                    <Image src={p.image} alt={displayName} fill className="object-contain p-2 transition-transform duration-500 group-hover/item:scale-110" />
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-burgundy uppercase tracking-widest">{p.brand}</span>
+                                    <span className="text-sm font-bold text-gray-900 group-hover/item:text-burgundy transition-colors line-clamp-1">
+                                      {displayName}
+                                    </span>
+                                    <span className="text-[11px] text-gray-400 font-medium">UZS {p.price.toLocaleString()}</span>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          {allProducts.filter(p => {
+                              const name = parseJsonIfString(p.name);
+                              const nameUz = typeof name === 'string' ? name : name?.uz || "";
+                              const nameRu = typeof name === 'string' ? "" : name?.ru || "";
+                              const nameEn = typeof name === 'string' ? "" : name?.en || "";
+                              const q = searchQuery.toLowerCase();
+                              return nameUz.toLowerCase().includes(q) || 
+                                     nameRu.toLowerCase().includes(q) || 
+                                     nameEn.toLowerCase().includes(q) || 
+                                     (p.brand || "").toLowerCase().includes(q);
+                            }).length === 0 && (
                             <div className="py-8 text-center">
                               <p className="text-gray-400 text-sm font-medium">{t.catalog.empty}</p>
                             </div>

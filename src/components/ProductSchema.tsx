@@ -7,15 +7,20 @@ interface ProductSchemaProps {
   currency: string;
 }
 
+import { useLang } from "@/store/lang-context";
+
 /**
  * ProductSchema component injects JSON-LD structured data for a specific product.
  * This helps search engines understand product details for rich snippets.
  */
 export default function ProductSchema({ product, currency }: ProductSchemaProps) {
+  const { lang } = useLang();
+  const name = typeof product.name === 'string' ? product.name : (product.name as any)?.[lang] || (product.name as any)?.uz || "";
+  
   const schema = {
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": product.name,
+    "name": name,
     "image": [
       `https://uuma.uz${product.image}`,
     ],

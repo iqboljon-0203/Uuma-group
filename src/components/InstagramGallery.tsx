@@ -70,7 +70,7 @@ export default function InstagramGallery() {
             </motion.h2>
           </div>
           <motion.a 
-            href="https://instagram.com/uumagroup.uz"
+            href="https://www.instagram.com/uumagroup_official"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
@@ -82,7 +82,7 @@ export default function InstagramGallery() {
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
             </svg>
-            @uumagroup.uz
+            @uumagroup_official
           </motion.a>
         </div>
 

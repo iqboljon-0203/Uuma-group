@@ -17,7 +17,7 @@ import { useLang } from "@/store/lang-context";
 import ProductSchema from "./ProductSchema";
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { addItem } = useCart();
   const { show } = useToast();
   const [selectedVolume, setSelectedVolume] = useState(product.volume);
@@ -30,13 +30,28 @@ export default function ProductCard({ product }: ProductCardProps) {
     return basePrice;
   };
 
+  const getTranslatedName = (name: any) => {
+    if (!name) return "";
+    if (typeof name === 'object') return name[lang] || name.uz || "";
+    if (typeof name === 'string' && name.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(name);
+        return parsed[lang] || parsed.uz || "";
+      } catch (e) {
+        return name;
+      }
+    }
+    return name;
+  };
+
   const handleAddToCart = () => {
     const finalPrice = getDisplayPrice();
+    const translatedName = getTranslatedName(product.name);
     addItem({ ...product, price: finalPrice, volume: selectedVolume });
     show(`${product.id === 2 ? t.product.names.belizna : 
            product.id === 4 ? t.product.names.soap : 
            product.id === 7 ? t.product.names.basket : 
-           product.name} ${t.product.added}!`);
+           translatedName} ${t.product.added}!`);
   };
 
   return (
@@ -87,7 +102,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             <Image
               src={product.image}
-              alt={product.name}
+              alt={getTranslatedName(product.name)}
               fill
               className="object-contain p-2"
               sizes="(max-width: 768px) 50vw, 25vw"
@@ -105,7 +120,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.brand}
             </span>
             <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight min-h-[40px] group-hover/title:text-burgundy transition-colors">
-              {product.name}
+              {getTranslatedName(product.name)}
             </h3>
           </Link>
           <p className="text-sm text-gray-500 mb-4">{selectedVolume}</p>

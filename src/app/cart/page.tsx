@@ -19,7 +19,7 @@ export default function CartPageWrapper() {
 }
 
 function CartPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { items, updateQty, removeItem, clearCart, totalPrice, totalCount } = useCart();
   const { show } = useToast();
   const [formData, setFormData] = useState({ name: "", phone: "", address: "" });
@@ -28,7 +28,7 @@ function CartPage() {
     if (product.id === 2) return t.product.names.belizna;
     if (product.id === 4) return t.product.names.soap;
     if (product.id === 7) return t.product.names.basket;
-    return product.name;
+    return typeof product.name === 'string' ? product.name : product.name?.[lang] || product.name?.uz || "";
   };
 
   const handleOrder = async () => {
@@ -143,7 +143,7 @@ function CartPage() {
                       <div className="relative w-20 h-20 bg-gray-50 rounded-xl flex-shrink-0 overflow-hidden">
                         <Image
                           src={item.product.image}
-                          alt={item.product.name}
+                          alt={getProductName(item.product)}
                           fill
                           className="object-contain p-2"
                         />

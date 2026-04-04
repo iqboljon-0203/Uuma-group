@@ -57,15 +57,13 @@ export default function TestimonialsSection() {
                 const text = typeof item.text === 'string' ? item.text : item.text?.[lang] || item.text;
                 const role = typeof item.role === 'string' ? item.role : item.role?.[lang] || item.role;
                 
-                if (activeIndex !== index) return null;
-                
                 return (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="pt-10"
+                    className="pt-10 min-w-full"
                   >
                     <div className="flex gap-1 mb-8">
                       {[...Array(5)].map((_, i) => (

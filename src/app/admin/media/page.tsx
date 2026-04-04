@@ -37,10 +37,12 @@ export default function MediaAdmin() {
     });
 
     if (data) {
-      const filesWithUrls = data.map(file => ({
-        ...file,
-        url: supabase.storage.from(bucketName).getPublicUrl(file.name).data.publicUrl
-      }));
+      const filesWithUrls = data
+        .filter(file => file.metadata !== null) // Filtlash: faqat fayllar (foldlerlarni olib tashlaymiz)
+        .map(file => ({
+          ...file,
+          url: supabase.storage.from(bucketName).getPublicUrl(file.name).data.publicUrl
+        }));
       setFiles(filesWithUrls);
     }
     setLoading(false);
@@ -142,7 +144,7 @@ export default function MediaAdmin() {
               </div>
               <div className="p-6">
                 <p className="text-[10px] font-black text-gray-900 truncate uppercase tracking-widest">{file.name.split('-').slice(1).join('-') || file.name}</p>
-                <p className="text-[9px] font-bold text-gray-400 mt-1 italic uppercase tracking-widest">{(file.metadata.size / 1024).toFixed(1)} KB</p>
+                <p className="text-[9px] font-bold text-gray-400 mt-1 italic uppercase tracking-widest">{file.metadata ? (file.metadata.size / 1024).toFixed(1) : "0"} KB</p>
               </div>
             </motion.div>
           ))}

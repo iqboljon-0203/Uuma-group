@@ -96,17 +96,38 @@ export default function TrustSection() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -8 }}
-              className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/20 transition-all flex flex-col items-center text-center group"
+              className="w-full"
             >
-              <div className={`w-16 h-16 ${item.color} ${item.iconColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                {item.icon}
-              </div>
-              <h3 className="text-xl font-extrabold text-gray-900 mb-4 tracking-tight">
-                {item.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed font-medium">
-                {item.desc}
-              </p>
+              {i === 2 ? (
+                <a 
+                  href="https://t.me/Ibrohim_Mobilograf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/20 transition-all flex flex-col items-center text-center group h-full cursor-pointer hover:border-burgundy/10"
+                >
+                  <div className={`w-16 h-16 ${item.color} ${item.iconColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-extrabold text-gray-900 mb-4 tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm leading-relaxed font-medium">
+                    {item.desc}
+                  </p>
+                </a>
+              ) : (
+                <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/20 transition-all flex flex-col items-center text-center group h-full">
+                  <div className={`w-16 h-16 ${item.color} ${item.iconColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-extrabold text-gray-900 mb-4 tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm leading-relaxed font-medium">
+                    {item.desc}
+                  </p>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

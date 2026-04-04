@@ -78,13 +78,27 @@ export default function ProductDetailPage() {
     return basePrice;
   };
 
+  const getTranslated = (val: any) => {
+    if (!val) return "";
+    if (typeof val === 'object') return val[lang] || val.uz || "";
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(val);
+        return parsed[lang] || parsed.uz || "";
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
+  const translatedName = getTranslated(product.name);
+
   const handleAddToCart = () => {
     const finalPrice = getDisplayPrice();
     addItem({ ...product, price: finalPrice, volume: selectedSize });
-    show(`${product.name} ${t.product.added}!`);
+    show(`${translatedName} ${t.product.added}!`);
   };
-
-  const translatedName = product.name;
 
   return (
     <div className="flex flex-col min-h-screen bg-cream">
@@ -111,7 +125,7 @@ export default function ProductDetailPage() {
               <div className="relative w-full h-full">
                 <Image
                   src={product.image}
-                  alt={product.name}
+                  alt={translatedName}
                   fill
                   className="object-contain"
                   priority
@@ -161,7 +175,7 @@ export default function ProductDetailPage() {
               {/* Description */}
               <div className="mb-10">
                 <p className="text-gray-600 leading-relaxed text-lg italic border-l-4 border-burgundy/20 pl-6 py-2">
-                  {product.description?.[lang] || product.description}
+                  {getTranslated(product.description)}
                 </p>
               </div>
 

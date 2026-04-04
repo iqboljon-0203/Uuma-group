@@ -20,6 +20,39 @@ export default function CategoriesAdmin() {
   const [editingCategory, setEditingCategory] = useState<any>(null);
   const [search, setSearch] = useState("");
 
+  const getTranslated = (val: any, lang: string = "uz") => {
+    if (!val) return "";
+    if (typeof val === 'object') return val[lang] || val.uz || "";
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(val);
+        return parsed[lang] || parsed.uz || "";
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
+  const parseJsonIfString = (val: any) => {
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        return JSON.parse(val);
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
+  const handleEditClick = (cat: any) => {
+    setEditingCategory({
+      ...cat,
+      name: parseJsonIfString(cat.name),
+      description: parseJsonIfString(cat.description)
+    });
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -38,7 +71,7 @@ export default function CategoriesAdmin() {
 
   const filteredCategories = categories.filter(c => 
     c.slug.toLowerCase().includes(search.toLowerCase()) ||
-    c.name.uz.toLowerCase().includes(search.toLowerCase())
+    getTranslated(c.name).toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -83,7 +116,7 @@ export default function CategoriesAdmin() {
             >
               <div className="relative h-48 bg-gray-50">
                 {cat.image ? (
-                  <Image src={cat.image} alt={cat.name.uz} fill className="object-cover" />
+                  <Image src={cat.image} alt={getTranslated(cat.name)} fill className="object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-200">
                     <Layers size={64} />
@@ -91,14 +124,14 @@ export default function CategoriesAdmin() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-6 left-8 right-8">
-                  <h3 className="text-xl font-extrabold text-white tracking-tight">{cat.name.uz}</h3>
+                  <h3 className="text-xl font-extrabold text-white tracking-tight">{getTranslated(cat.name)}</h3>
                   <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">{cat.slug}</p>
                 </div>
               </div>
               
               <div className="p-8 flex items-center justify-between gap-4">
                 <button 
-                  onClick={() => setEditingCategory(cat)}
+                  onClick={() => handleEditClick(cat)}
                   className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-50 text-gray-900 rounded-xl font-bold hover:bg-burgundy hover:text-white transition-all text-xs uppercase tracking-widest"
                 >
                   <Edit2 size={14} strokeWidth={3} /> Tahrirlash
@@ -141,7 +174,7 @@ export default function CategoriesAdmin() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-8">
-                    <div>
+                    <div className="hidden">
                       <label className="block text-[11px] font-extrabold text-burgundy uppercase tracking-[0.2em] mb-3">Kategoriya Slugi (Unique ID)</label>
                       <input 
                         type="text"
@@ -214,11 +247,24 @@ export default function CategoriesAdmin() {
                 <div className="pt-10 flex flex-col md:flex-row gap-4 border-t border-gray-50">
                    <button 
                     onClick={async () => {
-                      const { id, ...payload } = editingCategory;
+                      let payload = { ...editingCategory };
+                      const { id, ...rest } = payload;
+                      
+                      // Auto-generate slug if missing
+                      if (!rest.slug || rest.slug.trim() === "") {
+                        const baseName = rest.name?.uz || rest.name?.ru || rest.name?.en || "";
+                        if (baseName) {
+                          rest.slug = baseName
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-|-$)+/g, '');
+                        }
+                      }
+
                       if (id) {
-                        await supabase.from('categories').update(payload).eq('id', id);
+                        await supabase.from('categories').update(rest).eq('id', id);
                       } else {
-                        await supabase.from('categories').insert([payload]);
+                        await supabase.from('categories').insert([rest]);
                       }
                       setEditingCategory(null);
                       fetchCategories();

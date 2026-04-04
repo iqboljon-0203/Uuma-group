@@ -26,6 +26,39 @@ export default function ProductsAdmin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingProduct, setEditingProduct] = useState<any>(null);
 
+  const getTranslated = (val: any, lang: string = 'uz') => {
+    if (!val) return "";
+    if (typeof val === 'object') return val[lang] || val.uz || "";
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(val);
+        return parsed[lang] || parsed.uz || "";
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
+  const parseJsonIfString = (val: any) => {
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        return JSON.parse(val);
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
+  const handleEditClick = (p: any) => {
+    setEditingProduct({
+      ...p,
+      name: parseJsonIfString(p.name),
+      description: parseJsonIfString(p.description)
+    });
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -53,10 +86,12 @@ export default function ProductsAdmin() {
     setLoading(false);
   }
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.brand.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(p => {
+    const name = getTranslated(p.name).toLowerCase();
+    const brand = (p.brand || "").toLowerCase();
+    const search = searchTerm.toLowerCase();
+    return name.includes(search) || brand.includes(search);
+  });
 
   async function deleteProduct(id: string) {
     if (!confirm("Haqiqatan ham ushbu mahsulotni o'chirmoqchimisiz?")) return;
@@ -65,11 +100,24 @@ export default function ProductsAdmin() {
   }
 
   async function handleSave() {
-    const { id, categories: _, ...payload } = editingProduct;
+    let payload = { ...editingProduct };
+    const { id, categories: _, ...rest } = payload;
+    
+    // Auto-generate slug if missing
+    if (!payload.slug || payload.slug.trim() === "") {
+      const baseName = payload.name?.uz || payload.name?.ru || payload.name?.en || "";
+      if (baseName) {
+        rest.slug = baseName
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)+/g, '');
+      }
+    }
+
     if (id) {
-      await supabase.from('products').update(payload).eq('id', id);
+      await supabase.from('products').update(rest).eq('id', id);
     } else {
-      await supabase.from('products').insert([payload]);
+      await supabase.from('products').insert([rest]);
     }
     setEditingProduct(null);
     fetchProducts();
@@ -148,12 +196,12 @@ export default function ProductsAdmin() {
                   transition={{ delay: i * 0.05 }}
                   className="hover:bg-gray-50/50 transition-colors group cursor-pointer"
                 >
-                  <td className="px-10 py-8" onClick={() => setEditingProduct(p)}>
+                  <td className="px-10 py-8" onClick={() => handleEditClick(p)}>
                     <div className="flex items-center gap-6">
                       <div className="w-16 h-16 rounded-2xl bg-gray-100 relative overflow-hidden flex-shrink-0 shadow-sm border border-gray-100">
                         <Image 
                           src={p.image || "/brand-logo.png"} 
-                          alt={p.name} 
+                          alt={getTranslated(p.name)} 
                           width={64} 
                           height={64} 
                           className="object-cover" 
@@ -161,7 +209,9 @@ export default function ProductsAdmin() {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[15px] font-extrabold text-gray-900 tracking-tight leading-none mb-2">{p.name}</span>
+                        <span className="text-[15px] font-extrabold text-gray-900 tracking-tight leading-none mb-2">
+                          {getTranslated(p.name)}
+                        </span>
                         <span className="text-xs font-bold text-gray-400 uppercase tracking-widest italic">{p.volume}</span>
                       </div>
                     </div>
@@ -170,7 +220,7 @@ export default function ProductsAdmin() {
                     <div className="flex flex-col gap-2">
                        <span className="text-[13px] font-bold text-gray-800 tracking-tight italic uppercase">{p.brand}</span>
                        <span className="inline-flex max-w-fit px-3 py-1 bg-burgundy/5 text-burgundy rounded-lg text-[10px] font-bold uppercase tracking-widest border border-burgundy/10">
-                         {p.categories?.name?.uz || "Kategoriya yo'q"}
+                         {getTranslated(p.categories?.name) || "Kategoriya yo'q"}
                        </span>
                     </div>
                   </td>
@@ -186,7 +236,7 @@ export default function ProductsAdmin() {
                   </td>
                   <td className="px-10 py-8 text-right">
                     <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                      <button onClick={() => setEditingProduct(p)} className="p-3 bg-white border border-gray-100 rounded-xl text-gray-400 hover:text-burgundy hover:bg-burgundy/5 transition-all"><Edit3 size={18} /></button>
+                      <button onClick={() => handleEditClick(p)} className="p-3 bg-white border border-gray-100 rounded-xl text-gray-400 hover:text-burgundy hover:bg-burgundy/5 transition-all"><Edit3 size={18} /></button>
                       <button onClick={(e) => { e.stopPropagation(); deleteProduct(p.id); }} className="p-3 bg-white border border-gray-100 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"><Trash2 size={18} /></button>
                     </div>
                   </td>
@@ -235,7 +285,9 @@ export default function ProductsAdmin() {
 
                      <div className="grid grid-cols-2 gap-6">
                         <SectionField label="Brend" value={editingProduct.brand} onChange={(v) => setEditingProduct({...editingProduct, brand: v})} />
-                        <SectionField label="Slug (Unique)" value={editingProduct.slug} onChange={(v) => setEditingProduct({...editingProduct, slug: v})} />
+                        <div className="hidden">
+                           <SectionField label="Slug (Unique)" value={editingProduct.slug} onChange={(v) => setEditingProduct({...editingProduct, slug: v})} />
+                        </div>
                         <div className="space-y-3">
                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Kategoriya</label>
                            <select 

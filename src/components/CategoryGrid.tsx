@@ -12,6 +12,20 @@ export default function CategoryGrid() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const getTranslated = (val: any, lang: string = "uz") => {
+    if (!val) return "";
+    if (typeof val === 'object') return val[lang] || val.uz || "";
+    if (typeof val === 'string' && val.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(val);
+        return parsed[lang] || parsed.uz || "";
+      } catch (e) {
+        return val;
+      }
+    }
+    return val;
+  };
+
   useEffect(() => {
     supabase.from('categories').select('*').then(({ data }) => {
       if (data) setCategories(data);
@@ -62,7 +76,7 @@ export default function CategoryGrid() {
                 <div className="relative h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow-xl shadow-gray-200/50">
                   <Image
                     src={cat.image || "/category-liquids.png"}
-                    alt={cat.name?.[lang] || "Category"}
+                    alt={getTranslated(cat.name, lang)}
                     fill
                     className="object-cover transition-transform duration-1000 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -70,13 +84,13 @@ export default function CategoryGrid() {
                   <div className="absolute inset-0 bg-gradient-to-t from-burgundy/95 via-burgundy/30 to-transparent transition-all group-hover:via-burgundy/40" />
                   
                   {/* Category Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col gap-2">
-                    <h3 className="text-2xl font-bold text-white tracking-tight">
-                      {cat.name?.[lang]}
-                    </h3>
-                    <p className="text-white/70 text-sm leading-relaxed max-w-[240px]">
-                      {cat.description?.[lang]}
-                    </p>
+                    <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col gap-2">
+                      <h3 className="text-2xl font-bold text-white tracking-tight">
+                        {getTranslated(cat.name, lang)}
+                      </h3>
+                      <p className="text-white/70 text-sm leading-relaxed max-w-[240px]">
+                        {getTranslated(cat.description, lang)}
+                      </p>
                     
                     <motion.div
                       whileHover={{ x: 5 }}
